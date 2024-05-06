@@ -184,6 +184,108 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/" class="post-title-link" itemprop="url">BD-Rate (Bjontegaard Delta-Rate Metric)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-05-06 14:24:13 / Modified: 14:26:39" itemprop="dateCreated datePublished" datetime="2024-05-06T14:24:13+08:00">2024-05-06</time>
+            </span>
+
+          
+            <span id="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/" class="post-meta-item leancloud_visitors" data-flag-title="BD-Rate (Bjontegaard Delta-Rate Metric)" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>#BD-Rate (Bjontegaard Delta-Rate Metric)</p>
+<p><img src="https://vicuesoft.com/glossary/rd_curve/image1.png" alt="RD curve pic_1"></p>
+<p>The RD curve represents the encode performance: the higher the metric value for the lower bitrate, the better. The Bjontegaard Delta-Rate (BD Rate) metric provides a way to estimate the average difference between two RD-curves. BD Rate metric can be used to compare and choose the encoder or configuration.</p>
+<h2 id="Rate-Distortion-Plot"><a href="#Rate-Distortion-Plot" class="headerlink" title="Rate-Distortion Plot"></a>Rate-Distortion Plot</h2><p>Assume there are two video encoders to compare in terms of compression efficiency. Here by the term “compression efficiency” the following two measures are assumed:</p>
+<ol>
+<li>Bitrate (bits per second) of a compressed video sequence.</li>
+<li>Video distortion introduced by lossy compression.</li>
+</ol>
+<p>Let us assume we have four different compression results for each of the two encoders (A and B). Marking the bitrate on the x-axis and PSNR distortion on the y-axis the rate-distortion plot can be drawn as shown in the figure below.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1036/1*7AGpVfFUqluBHEE0x-_75g.png" alt="Rate-Distortion Compression Efficiency Points of Two Hypothetical Video Encoders."></p>
+<h2 id="Rate-Distortion-Curve"><a href="#Rate-Distortion-Curve" class="headerlink" title="Rate-Distortion Curve"></a>Rate-Distortion Curve</h2><p>One way to compare the efficiency in numerical form is to fix one measurement and compare by another. Let’s say, we want to compare bit rate savings at a certain PSNR distortion level of 38 dB, but available measure points are not exactly there. We need to interpolate the rate-distortion curve to get an approximation of the bit rate at the target distortion level (see figure below).</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1036/1*umUWHBSXu0-qR93rkFzzAg.png" alt="img"></p>
+<p>With the help of interpolation we now have two RD curves instead of points. By measuring the distance between the two curves at the certain distortion level the bitrate “savings” of the one encoder compared to the other one at this distortion level can be compared numerically.</p>
+<h2 id="BD-Rate-Metric"><a href="#BD-Rate-Metric" class="headerlink" title="BD Rate Metric"></a>BD Rate Metric</h2><p>BD Rate Metric is a method for calculating the average difference between two rate-distortion (RD) curves. In other words, to compare two encoders (or two encoding configurations) the area between the two RD-curves must be divided by the integration interval as shown below.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1036/1*2N8luICh1iyu_XiLe0GIWQ.png" alt="img"></p>
+<p>In a comparison between Encoder A and Encoder B a negative BD Rate would mean Encoder A provides better compression efficiency (lower bitrate at a similar visual quality level). A positive value would indicate inferior compression efficiency.</p>
+<p>If PSNR distortion value is compared using the bitrate as the basis of integration, the metric is called BD-PSNR and is measured in dB. In the same way you get BD-SSIM, BD-VMAF.</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://vicuesoft.com/glossary/term/rd_curve/">https://vicuesoft.com/glossary/term/rd_curve/</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/innovation-labs-blog/bjontegaard-delta-rate-metric-c8c82c1bc42c">https://medium.com/innovation-labs-blog/bjontegaard-delta-rate-metric-c8c82c1bc42c</a></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.04039">https://arxiv.org/pdf/2401.04039</a></p>
+<p><a target="_blank" rel="noopener" href="https://netflixtechblog.com/performance-comparison-of-video-coding-standards-an-adaptive-streaming-perspective-d45d0183ca95">https://netflixtechblog.com/performance-comparison-of-video-coding-standards-an-adaptive-streaming-perspective-d45d0183ca95</a></p>
+<p><a target="_blank" rel="noopener" href="https://streaminglearningcenter.com/encoding/compute-bd-rate-functions.html">https://streaminglearningcenter.com/encoding/compute-bd-rate-functions.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11842/118420T/Towards-much-better-SVT-AV1-quality-cycles-tradeoffs-for-VOD/10.1117/12.2595598.full#_=">https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11842/118420T/Towards-much-better-SVT-AV1-quality-cycles-tradeoffs-for-VOD/10.1117/12.2595598.full#_=</a>_</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1120,7 +1222,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1131,7 +1233,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
