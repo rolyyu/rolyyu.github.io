@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"rolyyu.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="编译和链接是在C&#x2F;C++软件开发过程中经常发生的两个非常基本的过程，为什么C&#x2F;C++源代码分割成头文件和源文件? 编译器是如何看到每个部分的? 这如何影响编译和链接? 还有许多类似的问题，无论是在设计C&#x2F;C++应用程序、为其实现新特性、试图解决bug(尤其是某些奇怪的bug)，还是试图让C和C&#x2F;C++代码协同工作，了解如何编译和链接将节省大量时间。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解C&#x2F;C++编译">
+<meta property="og:url" content="http://rolyyu.github.io/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/index.html">
+<meta property="og:site_name" content="Roly&#39;s Blog">
+<meta property="og:description" content="编译和链接是在C&#x2F;C++软件开发过程中经常发生的两个非常基本的过程，为什么C&#x2F;C++源代码分割成头文件和源文件? 编译器是如何看到每个部分的? 这如何影响编译和链接? 还有许多类似的问题，无论是在设计C&#x2F;C++应用程序、为其实现新特性、试图解决bug(尤其是某些奇怪的bug)，还是试图让C和C&#x2F;C++代码协同工作，了解如何编译和链接将节省大量时间。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://rolyyu.github.io/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/C_DevelopmentProcesses.png">
+<meta property="article:published_time" content="2020-08-09T12:47:28.000Z">
+<meta property="article:modified_time" content="2024-12-29T05:58:07.261Z">
+<meta property="article:author" content="Roly">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://rolyyu.github.io/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/C_DevelopmentProcesses.png">
+
+<link rel="canonical" href="http://rolyyu.github.io/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>理解C/C++编译 | Roly's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Roly's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Whatever will be, will be, the future's not ours to see.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          理解C/C++编译
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-09 20:47:28" itemprop="dateCreated datePublished" datetime="2020-08-09T20:47:28+08:00">2020-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" class="post-meta-item leancloud_visitors" data-flag-title="理解C/C++编译" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>编译和链接是在C&#x2F;C++软件开发过程中经常发生的两个非常基本的过程，为什么C&#x2F;C++源代码分割成头文件和源文件? 编译器是如何看到每个部分的? 这如何影响编译和链接? 还有许多类似的问题，无论是在设计C&#x2F;C++应用程序、为其实现新特性、试图解决bug(尤其是某些奇怪的bug)，还是试图让C和C&#x2F;C++代码协同工作，了解如何编译和链接将节省大量时间。</p>
+<span id="more"></span> 
+
+<h2 id="预处理-编译和链接"><a href="#预处理-编译和链接" class="headerlink" title="预处理 编译和链接"></a>预处理 编译和链接</h2><p><img src="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/C_DevelopmentProcesses.png" alt="preprocessor_compliler_linker_loader"></p>
+<p><strong>编译器</strong>（compiler）是一种<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Computer_program">计算机程序</a>，它会将某种编程语言写成的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Programming_language">源代码</a>（原始语言）转换成另一种编程语言（目标语言）。它主要的目的是将便于人编写、阅读、维护的高级计算机语言所写作的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Programming_language">源代码</a>程序，翻译为计算机能解读、运行的低阶机器语言的程序，也就是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Executable">可执行文件</a>。编译器将原始程序（source program）作为输入，翻译产生使用目标语言（target language）的等价程序。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Programming_language">源代码</a>一般为高级语言（High-level language），如Pascal、C、C++、C# 、Java等，而目标语言则是汇编语言或目标机器的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Object_code">目标代码</a>（Object code），有时也称作<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Machine_code">机器代码</a>（Machine code）。</p>
+<p>一个现代编译器的主要工作流程如下：</p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Source_code">源代码</a>（source code）→ <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Preprocessor">预处理器</a>（preprocessor）→ <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Compiler">编译器</a>（compiler）→ <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Assembly_language">汇编程序</a>（assembler）→ <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Object_code">目标代码</a>（object code）→ <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linker_(computing)">链接器</a>（linker）→ <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Executable">可执行文件</a>（executables），最后打包好的文件就可以给电脑去判读运行了。</p>
+<p>每个c++源文件都需要编译成目标文件。编译多个源文件产生的目标文件然后链接到可执行文件、共享库或静态库。c++源文件通常具有.cpp、.cxx或.cc扩展名后缀。c++源文件可以包含其他文件，称为头文件，使用#include指令。头文件具有.h、.hpp或.hxx这样的扩展名，或者完全没有扩展名，就像c++标准库和其他库的头文件(如Qt)中那样。扩展对于c++预处理器来说并不重要，它会将包含#include指令的行替换为所包含文件的全部内容。</p>
+<p>编译器对源文件执行的第一步是在其上运行预处理器。只有源文件被传递给编译器(进行预处理和编译)。头文件不传递给编译器。相反，它们是从源文件中包含的。在所有源文件的预处理阶段，每个头文件都可以被打开多次，具体取决于有多少源文件包含了它们，或者有多少源文件中包含的其他头文件也包含了它们(可能有许多间接级别)。另一方面，编译器(和预处理器)只会在源文件被传递给编译器时打开一次。</p>
+<p>对于每一个C&#x2F;C++源文件, 当它发现一个#include指令时，预处理器通过插入内容将构建一个翻译单元；与此同时，若找到条件编译模块的求值结果为false时，它会剥离代码源文件和指令的头。它还将完成一些其他任务，比如宏替换。一旦预处理器完成创建(有时是巨大的)转换单元，编译器就开始编译阶段并生成目标文件。</p>
+<p><a target="_blank" rel="noopener" href="https://gcc.gnu.org/">GNU C和C++编译器</a>分别称为gcc和g++。</p>
+<table>
+<thead>
+<tr>
+<th align="left">选项</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-c</td>
+<td align="left">只编译并生成目标文件。</td>
+</tr>
+<tr>
+<td align="left">-E</td>
+<td align="left">只运行 C 预编译器。</td>
+</tr>
+<tr>
+<td align="left">-g</td>
+<td align="left">生成调试信息。GNU 调试器可利用该信息。</td>
+</tr>
+<tr>
+<td align="left">-o FILE</td>
+<td align="left">生成指定的输出文件。用在生成可执行文件时。</td>
+</tr>
+<tr>
+<td align="left">-O0</td>
+<td align="left">不进行优化处理。</td>
+</tr>
+<tr>
+<td align="left">-O 或 -O1</td>
+<td align="left">优化生成代码。</td>
+</tr>
+<tr>
+<td align="left">-O2</td>
+<td align="left">进一步优化。</td>
+</tr>
+<tr>
+<td align="left">-O3</td>
+<td align="left">比 -O2 更进一步优化，包括 inline 函数。</td>
+</tr>
+<tr>
+<td align="left">-w</td>
+<td align="left">不生成任何警告信息。</td>
+</tr>
+<tr>
+<td align="left">-Wall</td>
+<td align="left">生成所有警告信息。</td>
+</tr>
+</tbody></table>
+<p>下面是一个示例:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello_c.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello, C world!\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello_cpp.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;Hello, C++ world!&quot;</span> &lt;&lt; endl;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过以下方法创建预处理文件:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -E hello_c.c -o hello_c.ii</span><br><span class="line">$ g++ -E hello_cpp.cpp -o hello_cpp.ii</span><br></pre></td></tr></table></figure>
+
+<p>看行数:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">wc</span> -l hello.ii</span><br><span class="line">544 hello.ii</span><br><span class="line">$ <span class="built_in">wc</span> -l hello_cpp.ii</span><br><span class="line">41840 hello_cpp.ii</span><br></pre></td></tr></table></figure>
+
+<p>在我的机器中hello.ii有544行代码, hello_cpp.ii有41840行代码。我们可以看到，编译器必须编译一个比我们看到的简单源文件大得多的文件。这是因为包含了头文件。在我们的示例中，我们只包含了一个header。随着我们不断包含头文件，翻译单元变得越来越大。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -c hello_c.c</span><br><span class="line">$ gcc -o hello_c.out hello_c.o</span><br><span class="line">$ ./hello_c.out</span><br><span class="line">Hello, C world!</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ g++ -c hello_cpp.cpp</span><br><span class="line">$ g++ -o hello_cpp.out hello_cpp.o</span><br><span class="line">$ ./hello_cpp.out</span><br><span class="line">Hello, C++ world!</span><br></pre></td></tr></table></figure>
+
+<h2 id="源文件如何导入和导出符号"><a href="#源文件如何导入和导出符号" class="headerlink" title="源文件如何导入和导出符号"></a>源文件如何导入和导出符号</h2><p>有一个简单的C(不是C++)源文件名为 print_num.c，它导出了两个函数，一个用于打印整数，另一个用于打印浮点数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">printI</span><span class="params">(<span class="type">int</span> v)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> <span class="title function_">printF</span><span class="params">(<span class="type">float</span> v)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译它以创建 print_num.o 目标文件:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gcc -c print_num.c</span></span><br></pre></td></tr></table></figure>
+
+<p>现在看看这个目标文件导出和导入的符号:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">nm print_num.o</span></span><br><span class="line">0000000000000010 T _printF</span><br><span class="line">0000000000000000 T _printI</span><br></pre></td></tr></table></figure>
+
+<p>没有符号被导入，导出两个符号 printF和printI。这些符号被导出为.text段(T)的一部分，因此它们是函数名、可执行代码。</p>
+<p>标准的方法是创建一个头文件来声明它们，并将它们包含在我们想要调用的任何源文件中。头文件可以有任何名称和扩展名。下面的例子print_num.h：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">printI</span><span class="params">(<span class="type">int</span> v)</span></span>;</span><br><span class="line"><span class="function"><span class="type">float</span> <span class="title">printF</span><span class="params">(<span class="type">float</span> v)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125; <span class="comment">// end extern &quot;C&quot;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>那些ifdef&#x2F;endif条件编译块是什么?如果我从C源文件中引用这个头文件，我希望它成为:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">printI</span><span class="params">(<span class="type">int</span> v)</span>;</span><br><span class="line"><span class="type">float</span> <span class="title function_">printF</span><span class="params">(<span class="type">float</span> v)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>但如果如果我从C++源文件中引用这个头文件，我希望它成为:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">printI</span><span class="params">(<span class="type">int</span> v)</span></span>;</span><br><span class="line">	<span class="function"><span class="type">float</span> <span class="title">printF</span><span class="params">(<span class="type">float</span> v)</span></span>;</span><br><span class="line">&#125; <span class="comment">// end extern &quot;C&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>C语言不知道关于extern “C”指令的任何事情，但是c++知道，它需要将这个指令应用到C函数声明中。这是因为c++重整了<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Name_mangling">函数(和方法)的名称</a>，因为它支持函数&#x2F;方法重载，而C不支持。</p>
+<p>这可以在名为print.cpp的c++源文件中看到:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span> <span class="comment">// std::cout, std::endl</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;print_num.h&quot;</span> <span class="comment">// printI, printF</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNum</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;printNum: &quot;</span> &lt;&lt; v &lt;&lt; <span class="string">&quot;, printI: &quot;</span> &lt;&lt; <span class="built_in">printI</span>(v) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNum</span><span class="params">(<span class="type">float</span> v)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;printNum: &quot;</span> &lt;&lt; v &lt;&lt; <span class="string">&quot;, printI: &quot;</span> &lt;&lt; <span class="built_in">printI</span>(v) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="type">void</span> <span class="title">printNumInt</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printNum</span>(v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="type">void</span> <span class="title">printNumFloat</span><span class="params">(<span class="type">float</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printNum</span>(v);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有两个名称相同的函数(printNum)，只是它们的参数类型不同:int或float。函数重载是C++的一个特性，在C中没有。为了实现这个特性并区分这些函数，C++修改了函数名，我们可以在导出的符号名中看到(我只从nm的输出中选择相关的):</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">g++ -c print.cpp</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">nm print.o</span> </span><br><span class="line">0000000000000140 T __Z8printNumf</span><br><span class="line">0000000000000000 T __Z8printNumi</span><br><span class="line">                 U _printF</span><br><span class="line">                 U _printI</span><br><span class="line">00000000000001d0 T _printNumFloat</span><br><span class="line">00000000000001b0 T _printNumInt</span><br><span class="line">                 U __ZNSt3__14coutE</span><br></pre></td></tr></table></figure>
+
+<p>在我的系统中，这些函数被导出为float版本的<code>__Z8printNumf</code>和int版本的<code>__Z8printNumi</code>。C++中的每个函数名都是混乱的，除非声明为extern “C”。在print中有两个函数是用C链接声明的。printSumInt和printSumFloat。</p>
+<p>因此，它们不能被重载，或者它们的导出名称将是相同的，因为它们没有被破坏。我必须通过在它们的名字后面加上整型或浮点数来区分它们。因为它们没有被破坏，所以可以从C代码中调用它们，我们很快就会看到。</p>
+<p>要像在C++源代码中那样查看被破坏的名称，我们可以在nm命令中使用-C (demangle)选项。同样，我将只复制输出相同的相关部分:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">nm -C print.o</span></span><br><span class="line">0000000000000140 T printNum(float)</span><br><span class="line">0000000000000000 T printNum(int)</span><br><span class="line">                 U _printF</span><br><span class="line">                 U _printI</span><br><span class="line">00000000000001d0 T _printNumFloat</span><br><span class="line">00000000000001b0 T _printNumInt</span><br><span class="line">                 U std::__1::cout</span><br></pre></td></tr></table></figure>
+
+<p>使用这个选项，我们看到的不是<code>__Z8printNumf</code>，而是printNum(float)，不是<code>__ZNSt3__14coutE</code>，而是<code>std::__1::cout</code>，这是更人性化的名称。</p>
+<p>我们还看到C++代码调用了C代码:print.cpp调用了printI和pringF，它们是在print_num.h中声明为具有C链接的C函数。这可以从print.o的nm输出中看出。上面一些未定义的(U)符号:printF, printI和std::cout。那些未定义的符号应该在一个对象文件(或库)中提供，该对象文件将在链接阶段与这个对象文件输出链接在一起。</p>
+<p>到目前为止，我们只是将源代码编译成目标代码，还没有链接。如果我们没有将包含这些导入符号定义的对象文件与此对象文件链接在一起，那么链接器将停止，并出现“丢失符号”错误。</p>
+<p>还要注意，由于print.cpp是一个C++源文件，是用C++编译器(g++)编译的，因此其中的所有代码都被编译为C++代码。带有C链接的函数，如printNumInt和printNumFloat，也是可以使用C++特性的C++函数。只是符号的名称与C兼容，但代码是C++，这一点可以从两个函数都在调用重载函数(printNum)这一事实看出，如果在C中编译printNumInt或printNumFloat，就不会发生这种情况。</p>
+<p>现在让我们看看 print.hpp，一个头文件，可以包含从C或C++源文件，它将允许从C和C++调用printNumInt和printNumFloat，以及从C++调用printNum:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">printNum</span><span class="params">(<span class="type">int</span> v)</span></span>;</span><br><span class="line"><span class="function"><span class="type">float</span> <span class="title">printNum</span><span class="params">(<span class="type">float</span> v)</span></span>;</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNumInt</span><span class="params">(<span class="type">int</span> v)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNumFloat</span><span class="params">(<span class="type">float</span> v)</span></span>;</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125; <span class="comment">// end extern &quot;C&quot;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>如果我们从C源文件包括它，我们只想看到:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">printNumInt</span><span class="params">(<span class="type">int</span> v)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">printNumFloat</span><span class="params">(<span class="type">float</span> v)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>不能从C代码中看到printNum，因为它的名字被破坏了，所以我们没有(标准的和可移植的)方法来为C代码声明它。是的，我可以声明为:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __Z8printNumi(<span class="type">int</span> v);</span><br><span class="line"><span class="type">void</span> __Z8printNumf(<span class="type">float</span> v);</span><br></pre></td></tr></table></figure>
+
+<p>链接器不会抱怨，因为这正是我当前安装的编译器为它发明的名称，但我不知道它是否适用于您的链接器(如果您的编译器生成了一个不同的错误名称)，甚至适用于我的链接器的下一个版本。我甚至不知道如果调用将按预期工作,因为不同的调用约定的存在(如何传递参数和返回值返回)。 它是与具体编译器相关的,可能是不同的C和C++调用(特别是对于C++函数成员函数和接收这个指针作为参数)。</p>
+<p>编译器可能会对普通C++函数使用一种调用约定，如果它们被声明为具有extern “ C “链接，则使用另一种调用约定。因此，欺骗编译器说一个函数使用C调用约定，而实际上它使用C++，同时，如果每个函数使用的约定在编译工具链中碰巧不同，可能会产生意想不到的结果。</p>
+<p>混合C和C++代码有标准的方法，从C中调用C++重载函数的标准方法是将它们封装在带有C链接的函数中，就像我们用printNumInt和printNumFloat封装printNum一样。</p>
+<p>如果我们在一个C++源文件中引用print.hpp，<code>__cplusplus</code>预处理器宏将被定义，该文件将被视为:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNum</span><span class="params">(<span class="type">int</span> v)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNum</span><span class="params">(<span class="type">float</span> v)</span></span>;</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNumInt</span><span class="params">(<span class="type">int</span> v)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">printNumFloat</span><span class="params">(<span class="type">float</span> v)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// end extern &quot;C&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这将允许C++代码调用重载函数printNum或其封装层printNumInt和printNumFloat。</p>
+<p>现在让我们创建一个包含main函数的C源文件，它是程序的入口点。这个C主函数将调用printNumInt和printNumFloat，也就是说，将使用C链接调用这两个C++函数。记住，这些是C++函数(它们的函数体执行C++代码)，只是它们的名称没有被打乱。文件命名为c-main.c:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;print.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printNumInt</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printNumFloat</span>(<span class="number">1.5f</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译生成目标文件:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gcc -c c-main.c</span></span><br></pre></td></tr></table></figure>
+
+<p>并查看导入&#x2F;导出符号:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">nm c-main.o</span></span><br><span class="line">0000000000000000 T _main</span><br><span class="line">                 U _printNumFloat</span><br><span class="line">                 U _printNumInt</span><br></pre></td></tr></table></figure>
+
+<p>如预期的那样，它导出main并导入printNumFloat和printNumInt。</p>
+<p>要将它们链接到一个可执行文件中，我们需要使用C++链接器(g++)，因为至少要链接的一个文件print.o是用c++编译的:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ g++ -o c-app print_num.o print.o c-main.o</span><br></pre></td></tr></table></figure>
+
+<p>执行产生预期的结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ./c-app</span><br><span class="line">printNum: 1, printI: 1</span><br><span class="line">printNum: 1.5, printF: 1.5</span><br></pre></td></tr></table></figure>
+
+<p>现在让我们尝试使用一个c++主文件，名为cpp-main.cpp:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;print.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printNum</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printNum</span>(<span class="number">1.5f</span>);</span><br><span class="line">    <span class="built_in">printNumInt</span>(<span class="number">3</span>);</span><br><span class="line">    <span class="built_in">printNumFloat</span>(<span class="number">3.5f</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译并查看cpp-main的导入&#x2F;导出符号 cpp-main.o对象文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ g++ -c cpp-main.cpp</span><br><span class="line">$ nm -C cpp-main.o</span><br><span class="line">                 U printNum(float)</span><br><span class="line">                 U printNum(int)</span><br><span class="line">0000000000000000 T _main</span><br><span class="line">                 U _printNumFloat</span><br><span class="line">                 U _printNumInt</span><br></pre></td></tr></table></figure>
+
+<p>它导出main，并导入C链接printNumFloat和printNumInt，以及两个被修改的printNum版本。</p>
+<p>你可能想知道为什么主符号没有导出为一个像main(int, char**)这样的混乱符号从这个C++源文件，因为它是一个C++源文件，它没有定义为extern “C”。main是一个特殊的实现定义函数，无论它是在C或C++源文件中定义，我的实现似乎都选择使用C链接。</p>
+<p>链接和运行程序会得到预期的结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ g++ -o cpp-app print_num.o print.o cpp-main.o</span><br><span class="line">$  ./cpp-app</span><br><span class="line">printNum: 1, printI: 1</span><br><span class="line">printNum: 1.5, printF: 1.5</span><br><span class="line">printNum: 3, printI: 3</span><br><span class="line">printNum: 3.5, printF: 3.5</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考文献：</p>
+<p>[1] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Compiler">https://en.wikipedia.org/wiki/Compiler</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc_make.html">https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc_make.html</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="http://www.cplusplus.com/doc/tutorial/introduction/">http://www.cplusplus.com/doc/tutorial/introduction/</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/compiler_support">https://en.cppreference.com/w/cpp/compiler_support</a></p>
+<p>[5] <a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E19957-01/806-3572/Using.html">https://docs.oracle.com/cd/E19957-01/806-3572/Using.html</a></p>
+<p>[6] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Name_mangling">https://en.wikipedia.org/wiki/Name_mangling</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" rel="prev" title="Unity-Android-Plugin">
+      <i class="fa fa-chevron-left"></i> Unity-Android-Plugin
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" rel="next" title="Android NDK 使用 Address Sanitizer">
+      Android NDK 使用 Address Sanitizer <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86-%E7%BC%96%E8%AF%91%E5%92%8C%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">预处理 编译和链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E6%96%87%E4%BB%B6%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5%E5%92%8C%E5%AF%BC%E5%87%BA%E7%AC%A6%E5%8F%B7"><span class="nav-number">2.</span> <span class="nav-text">源文件如何导入和导出符号</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Roly"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Roly</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rolyyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rolyyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:rolyyu@outlook.com" title="E-Mail → mailto:rolyyu@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/roly.yu.3" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;roly.yu.3" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/roly-yu-71573a108" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;roly-yu-71573a108" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Roly</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'UcWKjECGEctyd1FKvO7sKlNF-gzGzoHsz',
+      appKey     : 'h4inOLrsuDhVslcH1LGqHriP',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>

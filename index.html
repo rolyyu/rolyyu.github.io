@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"rolyyu.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Roly&#39;s Blog">
+<meta property="og:url" content="http://rolyyu.github.io/index.html">
+<meta property="og:site_name" content="Roly&#39;s Blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Roly">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://rolyyu.github.io/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Roly's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Roly's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Whatever will be, will be, the future's not ours to see.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2024/12/29/Polymorphism/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/29/Polymorphism/" class="post-title-link" itemprop="url">Polymorphism</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-12-29 14:36:26 / Modified: 14:43:26" itemprop="dateCreated datePublished" datetime="2024-12-29T14:36:26+08:00">2024-12-29</time>
+            </span>
+
+          
+            <span id="/2024/12/29/Polymorphism/" class="post-meta-item leancloud_visitors" data-flag-title="Polymorphism" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/12/29/Polymorphism/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/12/29/Polymorphism/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of objects, which can contain data and code: data in the form of fields (often known as attributes or properties), and code in the form of procedures (often known as methods). </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/12/29/Polymorphism/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2024/05/29/FFmpeg-Glossary-DAR-PAR-and-SAR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/05/29/FFmpeg-Glossary-DAR-PAR-and-SAR/" class="post-title-link" itemprop="url">FFmpeg Glossary: DAR, PAR, and SAR</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-05-29 15:31:29" itemprop="dateCreated datePublished" datetime="2024-05-29T15:31:29+08:00">2024-05-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 14:39:12" itemprop="dateModified" datetime="2024-12-29T14:39:12+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2024/05/29/FFmpeg-Glossary-DAR-PAR-and-SAR/" class="post-meta-item leancloud_visitors" data-flag-title="FFmpeg Glossary: DAR, PAR, and SAR" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/05/29/FFmpeg-Glossary-DAR-PAR-and-SAR/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/05/29/FFmpeg-Glossary-DAR-PAR-and-SAR/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>The SAR and DAR output in the FFmpeg terminal are as follows</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;test.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2018-05-25T12:42:26.000000Z</span><br><span class="line">  Duration: 00:02:00.02, start: 0.000000, bitrate: 50449 kb/s</span><br><span class="line">  Stream #0:0[0x1](eng): Video: h264 (Main) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1920x1080, 50126 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)</span><br></pre></td></tr></table></figure>
+
+<p>SAR (Sample Aspect Ratio) : 单个像素的宽度和像素的高度的比 (That is the width of a pixel divided by the height of the pixel.)</p>
+<p>DAR (Display Aspect Ratio) : 预期显示的宽度与高度的比 (The intended display’s width-to-height aspect)</p>
+<p>PAR (Picture Aspect Ratio) : 宽度与高度像素个数的比 (‘horizontal_size’:’vertical_size’)</p>
+<p><em><strong>What’s confusing:</strong></em></p>
+<p><strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Aspect_ratio_(image)#storage_aspect_ratio">Storage aspect ratio</a></strong> (<strong>SAR</strong>) is the ratio of numbers of pixels. </p>
+<p><strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pixel_aspect_ratio">Pixel aspect ratio</a></strong> (<strong>PAR</strong>) is a mathematical <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ratio">ratio</a> that describes how the width of a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pixel">pixel</a> in a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_image">digital image</a> compared to the height of that pixel.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/05/29/FFmpeg-Glossary-DAR-PAR-and-SAR/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/" class="post-title-link" itemprop="url">BD-Rate (Bjontegaard Delta-Rate Metric)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-05-06 14:24:13" itemprop="dateCreated datePublished" datetime="2024-05-06T14:24:13+08:00">2024-05-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 14:40:07" itemprop="dateModified" datetime="2024-12-29T14:40:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/" class="post-meta-item leancloud_visitors" data-flag-title="BD-Rate (Bjontegaard Delta-Rate Metric)" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>#BD-Rate (Bjontegaard Delta-Rate Metric)</p>
+<p><img src="https://vicuesoft.com/glossary/rd_curve/image1.png" alt="RD curve pic_1"></p>
+<p>The RD curve represents the encode performance: the higher the metric value for the lower bitrate, the better. The Bjontegaard Delta-Rate (BD Rate) metric provides a way to estimate the average difference between two RD-curves. BD Rate metric can be used to compare and choose the encoder or configuration.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/05/06/BD-Rate-Bjontegaard-Delta-Rate-Metric/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/" class="post-title-link" itemprop="url">Analyzing control flow in ffmpeg.c source file with cflow</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-05 16:24:52" itemprop="dateCreated datePublished" datetime="2024-03-05T16:24:52+08:00">2024-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/" class="post-meta-item leancloud_visitors" data-flag-title="Analyzing control flow in ffmpeg.c source file with cflow" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>用cflow分析ffmpeg.c源文件中的函数调用图, <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%87%BD%E5%BC%8F%E5%91%BC%E5%8F%AB%E5%9C%96"><strong>函数调用图</strong></a>（call graph，也称为call multigraph），属于<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E6%B5%81%E5%9C%96">控制流图</a>，可以展示程序中函数之间的关系。函数调用图可以由动态程序分析产生（动态函数调用图），也可以由静态程序分析产生（静态函数调用图）</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/05/Analyzing-control-flow-in-ffmpeg-c-source-file-with-cflow/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2022/09/07/Video-Buffer-Verifier/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/07/Video-Buffer-Verifier/" class="post-title-link" itemprop="url">Video Buffer Verifier</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-07 20:47:28" itemprop="dateCreated datePublished" datetime="2022-09-07T20:47:28+08:00">2022-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2022/09/07/Video-Buffer-Verifier/" class="post-meta-item leancloud_visitors" data-flag-title="Video Buffer Verifier" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/09/07/Video-Buffer-Verifier/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/07/Video-Buffer-Verifier/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>The <strong>Video Buffering Verifier</strong> (VBV) is a theoretical <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/MPEG">MPEG</a> video buffer model, used to ensure that an encoded video stream can be correctly buffered, and played back at the decoder device.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/07/Video-Buffer-Verifier/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">Linux core dump 分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-05 16:04:09" itemprop="dateCreated datePublished" datetime="2022-03-05T16:04:09+08:00">2022-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="Linux core dump 分析" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>有时，直接调试应用程序是不可能的。在这些情况下，可以在应用程序终止时收集有关该应用程序的信息，然后对其进行分析。识别应用程序中崩溃问题的最有效方法之一是通过分析 Core dump文件。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" class="post-title-link" itemprop="url">Android NDK 使用 Address Sanitizer</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-13 15:05:58" itemprop="dateCreated datePublished" datetime="2021-09-13T15:05:58+08:00">2021-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" class="post-meta-item leancloud_visitors" data-flag-title="Android NDK 使用 Address Sanitizer" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>从 API 级别 27 (Android O MR 1) 开始，Android NDK 支持 <a target="_blank" rel="noopener" href="https://github.com/google/sanitizers/wiki/AddressSanitizer">Address Sanitizer</a>（也称为 ASan）。ASan 是一种基于编译器的快速检测工具，用于检测C&#x2F;C++代码中的内存错误。ASan 的 CPU 开销约为 2 倍，代码大小开销在 50% 到 2 倍之间，并且内存开销很大。</p>
+<p><strong>注意: ASan在Android 平台上不支持检测内存泄漏！！！</strong></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">理解C/C++编译</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-09 20:47:28" itemprop="dateCreated datePublished" datetime="2020-08-09T20:47:28+08:00">2020-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" class="post-meta-item leancloud_visitors" data-flag-title="理解C/C++编译" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>编译和链接是在C&#x2F;C++软件开发过程中经常发生的两个非常基本的过程，为什么C&#x2F;C++源代码分割成头文件和源文件? 编译器是如何看到每个部分的? 这如何影响编译和链接? 还有许多类似的问题，无论是在设计C&#x2F;C++应用程序、为其实现新特性、试图解决bug(尤其是某些奇怪的bug)，还是试图让C和C&#x2F;C++代码协同工作，了解如何编译和链接将节省大量时间。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" class="post-title-link" itemprop="url">Unity-Android-Plugin</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-07-28 19:30:08" itemprop="dateCreated datePublished" datetime="2017-07-28T19:30:08+08:00">2017-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" class="post-meta-item leancloud_visitors" data-flag-title="Unity-Android-Plugin" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B1.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<center>开发环境Windows平台（Unity2017.1.0f3 Personal ，Android Studio 2.3.3）</center>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">Android-Studio中-gitignore的配置</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-11-15 11:28:53" itemprop="dateCreated datePublished" datetime="2016-11-15T11:28:53+08:00">2016-11-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/" class="post-meta-item leancloud_visitors" data-flag-title="Android-Studio中-gitignore的配置" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>如果你使用git 作版本控制工具，那么你可以轻松的使用android studio &#x2F; Intellij IDEA 的.gitignore 插件来生成一份可以将这些文件排除在外的.gitignore 过滤清单。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Roly"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Roly</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rolyyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rolyyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:rolyyu@outlook.com" title="E-Mail → mailto:rolyyu@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/roly.yu.3" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;roly.yu.3" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/roly-yu-71573a108" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;roly-yu-71573a108" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Roly</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'UcWKjECGEctyd1FKvO7sKlNF-gzGzoHsz',
+      appKey     : 'h4inOLrsuDhVslcH1LGqHriP',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>

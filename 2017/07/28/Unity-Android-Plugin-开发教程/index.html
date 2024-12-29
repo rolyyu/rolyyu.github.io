@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"rolyyu.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="开发环境Windows平台（Unity2017.1.0f3 Personal ，Android Studio 2.3.3）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity-Android-Plugin">
+<meta property="og:url" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Roly&#39;s Blog">
+<meta property="og:description" content="开发环境Windows平台（Unity2017.1.0f3 Personal ，Android Studio 2.3.3）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B1.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B2.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B3.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B4.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B5.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B6.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B7.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B8.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B9.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B10.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B11.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B12.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B13.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B14.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B15.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B16.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B1.gif">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B17.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B18.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B19.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B20.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B21.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B22.png">
+<meta property="og:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B2.gif">
+<meta property="article:published_time" content="2017-07-28T11:30:08.000Z">
+<meta property="article:modified_time" content="2024-12-29T05:58:07.213Z">
+<meta property="article:author" content="Roly">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B1.png">
+
+<link rel="canonical" href="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Unity-Android-Plugin | Roly's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Roly's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Whatever will be, will be, the future's not ours to see.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity-Android-Plugin
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-07-28 19:30:08" itemprop="dateCreated datePublished" datetime="2017-07-28T19:30:08+08:00">2017-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" class="post-meta-item leancloud_visitors" data-flag-title="Unity-Android-Plugin" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B1.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<center>开发环境Windows平台（Unity2017.1.0f3 Personal ，Android Studio 2.3.3）</center>
+
+<span id="more"></span> 
+
+<h2 id="在Unity项目中构建和使用Android-Plugin"><a href="#在Unity项目中构建和使用Android-Plugin" class="headerlink" title="在Unity项目中构建和使用Android Plugin"></a>在Unity项目中构建和使用Android Plugin</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2017.1/Documentation/Manual/PluginsForAndroid.html">Unity支持几种类型的Android plug-ins：</a></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B2.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<ol>
+<li>AAR 插件 和 Android Library</li>
+<li>JAR 插件</li>
+<li>继承UnityPlayerActivity</li>
+<li>Native(C++) 插件</li>
+</ol>
+</blockquote>
+<p><strong>Unity Android runtime</strong></p>
+<blockquote>
+<p><strong>Untiy Android runtime</strong>通过继承自<strong>FrameLayout</strong>的<strong>UnityPlayer</strong>实现，<strong>UnityPlayer</strong>实现了触控，键盘输入，相机，位置等特性。虽然这个<strong>UnityPlayer</strong>实现了大部分的<strong>native</strong>功能，但它不是应用程序的入口。</p>
+</blockquote>
+<p>在通用的Android Unity应用程序中，程序的入口是<strong>UnityPlayerActivity</strong>。如果你看一下APK文件反编译后的AndroidManifest.xml文件，可以看到它是如何标记<strong>UnityPlayerActivity</strong>作为应用程序的Launcher的。</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B3.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p>查看Unity安装目录发现，<strong>UnityPlayerActivity</strong>的源码可以在<strong>C:\Program Files\Unity\Editor\Data\PlaybackEngines\AndroidPlayer\Source</strong>中查看。</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B4.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UnityPlayerActivity</span> <span class="keyword">extends</span> <span class="title class_">Activity</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">protected</span> UnityPlayer mUnityPlayer; <span class="comment">// don&#x27;t change the name of this variable; referenced from native code</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Setup activity layout</span></span><br><span class="line">    <span class="meta">@Override</span> <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span> <span class="params">(Bundle savedInstanceState)</span></span><br><span class="line">    &#123;</span><br><span class="line">        requestWindowFeature(Window.FEATURE_NO_TITLE);</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line"></span><br><span class="line">        getWindow().setFormat(PixelFormat.RGBX_8888); <span class="comment">// &lt;--- This makes xperia play happy</span></span><br><span class="line"></span><br><span class="line">        mUnityPlayer = <span class="keyword">new</span> <span class="title class_">UnityPlayer</span>(<span class="built_in">this</span>);</span><br><span class="line">        setContentView(mUnityPlayer);</span><br><span class="line">        mUnityPlayer.requestFocus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    .........</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// For some reason the multiple keyevent type is not supported by the ndk.</span></span><br><span class="line">    <span class="comment">// Force event injection by overriding dispatchKeyEvent().</span></span><br><span class="line">    <span class="meta">@Override</span> <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">dispatchKeyEvent</span><span class="params">(KeyEvent event)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (event.getAction() == KeyEvent.ACTION_MULTIPLE)</span><br><span class="line">            <span class="keyword">return</span> mUnityPlayer.injectEvent(event);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.dispatchKeyEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">   .........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到<strong>UnityPlayerActivity</strong>继承自<strong>Activity</strong>，并且<strong>UnityPlayerActivity</strong>持有一个<strong>UnityPlayer</strong>实例。<strong>UnityPlayerActivity</strong>通过<strong>UnityPlayer</strong>分派<strong>native</strong> 事件。</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B5.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2017.1/Documentation/Manual/AndroidUnityPlayerActivity.html">通用的Android插件开发，通过继承<strong>UnityPlayerActivity</strong></a>，并使子类成为整个应用程序的<strong>LAUNCHER</strong> <strong>Activity</strong>，接下来将介绍继承<strong>UnityPlayerActivity</strong>方式的<strong>Android Plugin</strong> 。</p>
+<h2 id="继承UnityPlayerActivity方式的Android-Plugin"><a href="#继承UnityPlayerActivity方式的Android-Plugin" class="headerlink" title="继承UnityPlayerActivity方式的Android Plugin"></a>继承<strong>UnityPlayerActivity</strong>方式的<strong>Android Plugin</strong></h2><p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B6.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p><strong>Android Plugin</strong>需要包含Android项目中<strong>build</strong>后得到的<strong>app-debug.aar</strong>和<strong>Manifest.xml</strong>以及资源文件等,提供给Unity项目使用。文件存放在Unity项目中的**&#x2F;Assets&#x2F;Plugins&#x2F;Android<strong>。Unity项目中的代码通过</strong>app-debug.aar**与封装在其中的Android代码进行交互。For more details about <strong>.aar</strong>, see <a target="_blank" rel="noopener" href="https://developer.android.com/studio/projects/android-library.html#aar-contents">Android Developer Doc</a>. And for more information about <strong>“How Unity produces the Android Manifest”</strong>, see <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/android-manifest.html">Unity Developer Doc</a></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B7.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B8.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p>那么，接下来新建Android项目，进而生成<strong>app-debug.aar</strong>文件和<strong>Manifest.xml</strong>文件。</p>
+<h3 id="Android端的操作"><a href="#Android端的操作" class="headerlink" title="Android端的操作"></a>Android端的操作</h3><h4 id="新建Android-项目"><a href="#新建Android-项目" class="headerlink" title="新建Android 项目"></a>新建Android 项目</h4><p>1.将项目切换成project的视图，打开app目录下的build.gradle文件，</p>
+<blockquote>
+<p>1.将<strong>apply plugin: ‘com.android.application’<strong>，改成</strong>apply plugin: ‘com.android.library’</strong></p>
+<p>2.然后删除<strong>applicationId</strong></p>
+</blockquote>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B9.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p>2.修改<strong>Manifest.xml</strong>文件</p>
+<p>在activity中添加</p>
+<p><code>&lt;meta-data android:name=&quot;unityplaer.UnityActivity&quot; android:value=&quot;true&quot;/&gt;</code></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B10.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<h4 id="引入Unity的classes-jar包"><a href="#引入Unity的classes-jar包" class="headerlink" title="引入Unity的classes.jar包"></a>引入Unity的<strong>classes.jar</strong>包</h4><p>从Unity 的安装目录找到unity的classes.jar包。<br>Windows目录：</p>
+<p><strong>C:\ProgramFiles\Unity\Editor\Data\PlaybackEngines\AndroidPlayer\Variations\mono\Release\classes.jar</strong><br>Mac下目录：</p>
+<p><strong>&#x2F;Applications&#x2F;Unity&#x2F;PlaybackEngines&#x2F;AndroidPlayer&#x2F;Variations&#x2F;mono&#x2F;Release&#x2F;Classes\classes.jar</strong><br>​将其拷贝到UnityAndroid项目app目录下的libs目录下，右键<strong>Add as library</strong>，导入之后可以发现在build.gradle中就有他的引入了。</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B11.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B12.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<h4 id="编写Android项目与Unity项目交互的代码"><a href="#编写Android项目与Unity项目交互的代码" class="headerlink" title="编写Android项目与Unity项目交互的代码"></a>编写Android项目与Unity项目交互的代码</h4><p>首先需要让MainActivity继承<strong>UnityPlayerActivity</strong>,同时删除onCreate方法中的<strong>setContentView()</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">UnityPlayerActivity</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//示例1：</span></span><br><span class="line">    <span class="comment">//Unity端调用该函数</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">ShowToast</span><span class="params">(<span class="keyword">final</span> String msg)</span>&#123;</span><br><span class="line">        <span class="comment">// 需要在UI线程下执行</span></span><br><span class="line">        runOnUiThread(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                Toast.makeText(getApplicationContext(),msg, Toast.LENGTH_SHORT).show();</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">AlertDialog</span>.Builder(MainActivity.<span class="built_in">this</span>).setMessage(msg).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//示例2：</span></span><br><span class="line">    <span class="comment">//Unity端调用该函数</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUnityText</span><span class="params">()</span>&#123;</span><br><span class="line">        runOnUiThread(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                Toast.makeText(getApplicationContext(),<span class="string">&quot;Android 端调用setText&quot;</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">                <span class="comment">//调用Unity端函数</span></span><br><span class="line">                UnityPlayer.UnitySendMessage(<span class="string">&quot;Canvas&quot;</span>,<span class="string">&quot;setText&quot;</span>,<span class="string">&quot;Android 端调用setText&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Build得到app-debug-aar文件和Manifest-xml文件"><a href="#Build得到app-debug-aar文件和Manifest-xml文件" class="headerlink" title="Build得到app-debug.aar文件和Manifest.xml文件"></a>Build得到<strong>app-debug.aar</strong>文件和<strong>Manifest.xml</strong>文件</h4><p>分别在&#x2F;app&#x2F;build&#x2F;outputs&#x2F;aar和&#x2F;app&#x2F;src&#x2F;main目录下</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B13.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<p>接下来需要将<strong>app-debug.aar</strong>用解压软件打开，并且删除<strong>libs</strong>目录下的<strong>classes.jar</strong></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B14.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<h3 id="Unity端的操作"><a href="#Unity端的操作" class="headerlink" title="Unity端的操作"></a>Unity端的操作</h3><h4 id="创建Unity项目"><a href="#创建Unity项目" class="headerlink" title="创建Unity项目"></a>创建Unity项目</h4><p>新建Unity项目，并新建如下目录将Android端得到的<strong>app-debug.aar</strong>文件和<strong>Manifest.xml</strong>文件放在**&#x2F;Plugins&#x2F;Android**目录下,同时在Hierarchy下按照图示新建Canvas,Button和Text：</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B15.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<h4 id="编写C-脚本"><a href="#编写C-脚本" class="headerlink" title="编写C#脚本"></a>编写C#脚本</h4><p>同时新建名为AndroidTest.cs的C#脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AndroidTest</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use this for initialization</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span> ()</span> &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Update is called once per frame</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Update</span> ()</span> &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BtnShowMessage</span>()</span></span><br><span class="line">	&#123;</span><br><span class="line">        <span class="keyword">using</span> (AndroidJavaClass jc = <span class="keyword">new</span> AndroidJavaClass(<span class="string">&quot;com.unity3d.player.UnityPlayer&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">using</span>(AndroidJavaObject jo = jc.GetStatic&lt;AndroidJavaObject&gt;(<span class="string">&quot;currentActivity&quot;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 调用Android端方法</span></span><br><span class="line">                jo.Call(<span class="string">&quot;ShowToast&quot;</span>, <span class="string">&quot;Unity调用了Android中的AlertDialog&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BtnSetText</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">using</span> (AndroidJavaClass jc = <span class="keyword">new</span> AndroidJavaClass(<span class="string">&quot;com.unity3d.player.UnityPlayer&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">using</span> (AndroidJavaObject jo = jc.GetStatic&lt;AndroidJavaObject&gt;(<span class="string">&quot;currentActivity&quot;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 调用Android端方法</span></span><br><span class="line">                jo.Call(<span class="string">&quot;setUnityText&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//Android端调用该方法</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setText</span>(<span class="params"><span class="built_in">string</span> result</span>)</span>&#123;</span><br><span class="line">		Text text = GameObject.Find (<span class="string">&quot;UnityText&quot;</span>).GetComponent&lt;Text&gt; ();</span><br><span class="line">		text.text = result;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="编译运行"><a href="#编译运行" class="headerlink" title="编译运行"></a>编译运行</h4><p>按照标号步骤进行1. 选择Build的平台-&gt;-&gt;2. 添加<strong>Scenes</strong> -&gt;-&gt; 3. 设置<strong>Identification</strong> -&gt;-&gt; 4. 设置包名和 API Level -&gt;-&gt; 5. 编译运行</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B16.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<h4 id="效果展示"><a href="#效果展示" class="headerlink" title="效果展示"></a>效果展示</h4><p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B1.gif" alt="Unity-Android-Plugin-开发教程1"></p>
+<h2 id="使用AAR或JAR方式的Android-Plugin"><a href="#使用AAR或JAR方式的Android-Plugin" class="headerlink" title="使用AAR或JAR方式的Android Plugin"></a>使用<strong>AAR</strong>或<strong>JAR</strong>方式的<strong>Android Plugin</strong></h2><h3 id="Android端的操作-1"><a href="#Android端的操作-1" class="headerlink" title="Android端的操作"></a>Android端的操作</h3><h4 id="在Android-Studio中新建项目"><a href="#在Android-Studio中新建项目" class="headerlink" title="在Android Studio中新建项目"></a>在Android Studio中新建项目</h4><p>1.选择<strong>Add No Activity</strong></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B17.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<ol>
+<li>新建<strong>Modue</strong>，选择<strong>Android Library</strong></li>
+</ol>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B18.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<ol>
+<li><p>添加<strong>AndroidPlugin.java</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.content.Intent;</span><br><span class="line"><span class="keyword">import</span> android.content.IntentFilter;</span><br><span class="line"><span class="keyword">import</span> android.os.BatteryManager;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AndroidPlugin</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Needed to get the battery level.</span></span><br><span class="line">    <span class="keyword">private</span> Context context;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">AndroidPlugin</span><span class="params">(Context context)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Return the battery level as a float between 0 and 1 (1 being fully charged, 0 fulled discharged)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">float</span> <span class="title function_">GetBatteryPct</span><span class="params">()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Intent</span> <span class="variable">batteryStatus</span> <span class="operator">=</span> GetBatteryStatusIntent();</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">level</span> <span class="operator">=</span> batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -<span class="number">1</span>);</span><br><span class="line">        <span class="type">int</span> <span class="variable">scale</span> <span class="operator">=</span> batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">float</span> <span class="variable">batteryPct</span> <span class="operator">=</span> level / (<span class="type">float</span>)scale;</span><br><span class="line">        <span class="keyword">return</span> batteryPct;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Return whether or not we&#x27;re currently on charge</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">IsBatteryCharging</span><span class="params">()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Intent</span> <span class="variable">batteryStatus</span> <span class="operator">=</span> GetBatteryStatusIntent();</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">status</span> <span class="operator">=</span> batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> status == BatteryManager.BATTERY_STATUS_CHARGING ||</span><br><span class="line">                status == BatteryManager.BATTERY_STATUS_FULL;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Intent <span class="title function_">GetBatteryStatusIntent</span><span class="params">()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">IntentFilter</span> <span class="variable">ifilter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IntentFilter</span>(Intent.ACTION_BATTERY_CHANGED);</span><br><span class="line">        <span class="keyword">return</span> context.registerReceiver(<span class="literal">null</span>, ifilter);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Get System Time</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getSysTime</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">SimpleDateFormat</span>(<span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).format(<span class="keyword">new</span> <span class="title class_">Date</span>()).toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Build Module之后，在模块的子目录**&#x2F;build&#x2F;outputs&#x2F;arr<strong>中得到</strong>.aar** 和 <strong>.jar</strong></p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B19.png" alt="Unity-Android-Plugin-开发教程1"></p>
+</li>
+</ol>
+<h3 id="Unity端的操作-1"><a href="#Unity端的操作-1" class="headerlink" title="Unity端的操作"></a>Unity端的操作</h3><h4 id="创建Unity项目-1"><a href="#创建Unity项目-1" class="headerlink" title="创建Unity项目"></a>创建Unity项目</h4><p>将得到的**.arr**(将**.arr<strong>解压就可以得到</strong>.jar**) 放在<strong>Assert</strong>目录下，可以放在任意的目录下，<a target="_blank" rel="noopener" href="https://docs.unity3d.com/2017.1/Documentation/Manual/AndroidAARPlugins.html">官方推荐使用**.aar**</a> 。并且按照如下目录新建Canvas和Text。</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B20.png" alt="Unity-Android-Plugin-开发教程1"></p>
+<h4 id="编写C-脚本-1"><a href="#编写C-脚本-1" class="headerlink" title="编写C#脚本"></a>编写C#脚本</h4><p>编写<strong>BatteryLevelPlugin.cs</strong> :</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2017.1/Documentation/Manual/AndroidJARPlugins.html">Unity提供了两种方式与java进行交互</a></p>
+<ol>
+<li><p>AndroidJNI 和 AndroidJNIHelper </p>
+</li>
+<li><p>AndroidJavaClass , AndroidJavaObject 和 AndroidJavaProxy</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B21.png" alt="Unity-Android-Plugin-开发教程1"></p>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>同时，官方推荐如下调用方式：</p>
+<p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B22.png" alt="Unity-Android-Plugin-开发教程1"></p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BatteryLevelPlugin</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">static</span> <span class="type">float</span> <span class="title">GetBatteryLevel</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (Application.platform == RuntimePlatform.Android)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">using</span> (var javaUnityPlayer = <span class="keyword">new</span> <span class="built_in">AndroidJavaClass</span>(<span class="string">&quot;com.unity3d.player.UnityPlayer&quot;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">using</span> (var currentActivity = javaUnityPlayer.<span class="built_in">GetStatic</span>&lt;AndroidJavaObject&gt;(<span class="string">&quot;currentActivity&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">using</span> (var androidPlugin = <span class="keyword">new</span> <span class="built_in">AndroidJavaObject</span>(<span class="string">&quot;com.hiscene.androidsysinfo.AndroidPlugin&quot;</span>, currentActivity))</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">return</span> androidPlugin.<span class="built_in">Call</span>&lt;<span class="type">float</span>&gt;(<span class="string">&quot;GetBatteryPct&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>f;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">static</span> string <span class="title">GetSysTime</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        AndroidJNI.<span class="built_in">AttachCurrentThread</span>();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        IntPtr javaClass = AndroidJNI.<span class="built_in">FindClass</span>(<span class="string">&quot;com/unity3d/player/UnityPlayer&quot;</span>);</span><br><span class="line"></span><br><span class="line">        IntPtr fid = AndroidJNI.<span class="built_in">GetStaticFieldID</span>(javaClass, <span class="string">&quot;currentActivity&quot;</span>, <span class="string">&quot;Landroid/app/Activity;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        IntPtr obj = AndroidJNI.<span class="built_in">GetStaticObjectField</span>(javaClass, fid);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        IntPtr pluginClass = AndroidJNI.<span class="built_in">FindClass</span>(<span class="string">&quot;com/hiscene/androidsysinfo/AndroidPlugin&quot;</span>);</span><br><span class="line"></span><br><span class="line">        IntPtr initMethod = AndroidJNI.<span class="built_in">GetMethodID</span>(pluginClass, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;(Landroid/content/Context;)V&quot;</span>);</span><br><span class="line"></span><br><span class="line">        jvalue[] jv = <span class="keyword">new</span> jvalue[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//TODO</span></span><br><span class="line">        </span><br><span class="line">        IntPtr pobj = AndroidJNI.<span class="built_in">NewObject</span>(pluginClass, initMethod,jv);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        IntPtr enableMethod = AndroidJNI.<span class="built_in">GetMethodID</span>(pluginClass, <span class="string">&quot;getSysTime&quot;</span>, <span class="string">&quot;()Ljava/lang/String;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> AndroidJNI.<span class="built_in">CallStringMethod</span>(pobj, enableMethod, <span class="keyword">new</span> jvalue[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//方式一：</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">static</span> string <span class="title">GetSysTimeAndroidJNI</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line"></span><br><span class="line">        AndroidJNI.<span class="built_in">AttachCurrentThread</span>();</span><br><span class="line"></span><br><span class="line">        IntPtr javaClass = AndroidJNI.<span class="built_in">FindClass</span>(<span class="string">&quot;com/hiscene/androidsysinfo/SysTime&quot;</span>);</span><br><span class="line"></span><br><span class="line">        IntPtr initMethod = AndroidJNI.<span class="built_in">GetMethodID</span>(javaClass, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;()V&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        IntPtr pobj = AndroidJNI.<span class="built_in">NewObject</span>(javaClass, initMethod, AndroidJNIHelper.<span class="built_in">CreateJNIArgArray</span>(<span class="keyword">new</span> object[<span class="number">1</span>]));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        IntPtr enableMethod = AndroidJNI.<span class="built_in">GetMethodID</span>(javaClass, <span class="string">&quot;getSysTime&quot;</span>, <span class="string">&quot;()Ljava/lang/String;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> AndroidJNI.<span class="built_in">CallStringMethod</span>(pobj, enableMethod, <span class="keyword">new</span> jvalue[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//方式二：</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">static</span> string <span class="title">GetSysTimeAndroidJavaClass</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (Application.platform == RuntimePlatform.Android)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">using</span> (var javaUnityPlayer = <span class="keyword">new</span> <span class="built_in">AndroidJavaClass</span>(<span class="string">&quot;com.unity3d.player.UnityPlayer&quot;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">using</span> (var currentActivity = javaUnityPlayer.<span class="built_in">GetStatic</span>&lt;AndroidJavaObject&gt;(<span class="string">&quot;currentActivity&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">using</span> (var androidPlugin = <span class="keyword">new</span> <span class="built_in">AndroidJavaObject</span>(<span class="string">&quot;com.hiscene.androidsysinfo.AndroidPlugin&quot;</span>, currentActivity))</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">return</span> androidPlugin.<span class="built_in">Call</span>&lt;string&gt;(<span class="string">&quot;getSysTime&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Time yyyy-MM-dd HH:mm:ss&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>编写<strong>BatteryMonitor.cs</strong> :</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BatteryMonitor</span> : MonoBehaviour &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Text batteryLevelText;</span><br><span class="line">    <span class="keyword">public</span> Text batteryLevelIcon;</span><br><span class="line">    <span class="keyword">public</span> Text sysTime;</span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> readonly string BATTERY_LEVEL_100 = Char.<span class="built_in">ConvertFromUtf32</span>(<span class="number">0xf240</span>);</span><br><span class="line">    <span class="type">static</span> readonly string BATTERY_LEVEL_75 = Char.<span class="built_in">ConvertFromUtf32</span>(<span class="number">0xf241</span>);</span><br><span class="line">    <span class="type">static</span> readonly string BATTERY_LEVEL_50 = Char.<span class="built_in">ConvertFromUtf32</span>(<span class="number">0xf242</span>);</span><br><span class="line">    <span class="type">static</span> readonly string BATTERY_LEVEL_25 = Char.<span class="built_in">ConvertFromUtf32</span>(<span class="number">0xf243</span>);</span><br><span class="line">    <span class="type">static</span> readonly string BATTERY_LEVEL_0 = Char.<span class="built_in">ConvertFromUtf32</span>(<span class="number">0xf244</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Update</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">UpdateStatusIndicators</span>();</span><br><span class="line">        sysTime.text = BatteryLevelPlugin.<span class="built_in">GetSysTime</span>();</span><br><span class="line">        </span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">UpdateStatusIndicators</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var currentBatteryLevel = BatteryLevelPlugin.<span class="built_in">GetBatteryLevel</span>() * <span class="number">100</span>f;</span><br><span class="line">        batteryLevelText.text = String.<span class="built_in">Format</span>(<span class="string">&quot;&#123;0&#125;%&quot;</span>, currentBatteryLevel);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Show the icon that matches the current level most closely.</span></span><br><span class="line">        <span class="keyword">if</span> (currentBatteryLevel &gt;= <span class="number">88</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            batteryLevelIcon.text = BATTERY_LEVEL_100;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (currentBatteryLevel &gt;= <span class="number">63</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            batteryLevelIcon.text = BATTERY_LEVEL_75;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (currentBatteryLevel &gt;= <span class="number">38</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            batteryLevelIcon.text = BATTERY_LEVEL_50;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (currentBatteryLevel &gt;= <span class="number">13</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            batteryLevelIcon.text = BATTERY_LEVEL_25;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            batteryLevelIcon.text = BATTERY_LEVEL_0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="按照步骤编译运行"><a href="#按照步骤编译运行" class="headerlink" title="按照步骤编译运行"></a>按照步骤编译运行</h4><p>步骤：1. 选择Build的平台-&gt;-&gt;2. 添加<strong>Scenes</strong> -&gt;-&gt; 3. 设置<strong>Identification</strong> -&gt;-&gt; 4. 设置包名和 API Level -&gt;-&gt; 5. 编译运行</p>
+<h4 id="效果展示-1"><a href="#效果展示-1" class="headerlink" title="效果展示"></a>效果展示</h4><p><img src="/2017/07/28/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/Unity-Android-Plugin-%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B2.gif" alt="Unity-Android-Plugin-开发教程1"></p>
+<h2 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h2><p><a target="_blank" rel="noopener" href="https://github.com/rolyyu/UnityAndroidPlugin">https://github.com/rolyyu/UnityAndroidPlugin</a></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/PluginsForAndroid.html">[1] https://docs.unity3d.com/Manual/PluginsForAndroid.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.voidcn.com/blog/Silk2018/article/p-6632911.html">[2] http://www.voidcn.com/blog/Silk2018/article/p-6632911.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/zhangdi2017/article/details/65629589">[3] http://blog.csdn.net/zhangdi2017/article/details/65629589</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.yangzhenlin.com/unity-android-plugin/">[4] https://www.yangzhenlin.com/unity-android-plugin/</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@datdeveloper/how-to-make-android-plugin-for-unity-take-photo-from-camera-and-gallery-c12fe247c770">[5] https:&#x2F;&#x2F;medium.com&#x2F;@datdeveloper&#x2F;how-to-make-android-plugin-for-unity-take-photo-from-camera-and-gallery-c12fe247c770</a></p>
+<p><a target="_blank" rel="noopener" href="http://addcomponent.com/android-native-plugin-unity/">[6] http://addcomponent.com/android-native-plugin-unity/</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/11/15/Android-Studio%E4%B8%AD-gitignore%E7%9A%84%E9%85%8D%E7%BD%AE/" rel="prev" title="Android-Studio中-gitignore的配置">
+      <i class="fa fa-chevron-left"></i> Android-Studio中-gitignore的配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" rel="next" title="理解C/C++编译">
+      理解C/C++编译 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8Unity%E9%A1%B9%E7%9B%AE%E4%B8%AD%E6%9E%84%E5%BB%BA%E5%92%8C%E4%BD%BF%E7%94%A8Android-Plugin"><span class="nav-number">1.</span> <span class="nav-text">在Unity项目中构建和使用Android Plugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E6%89%BFUnityPlayerActivity%E6%96%B9%E5%BC%8F%E7%9A%84Android-Plugin"><span class="nav-number">2.</span> <span class="nav-text">继承UnityPlayerActivity方式的Android Plugin</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Android%E7%AB%AF%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">Android端的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E5%BB%BAAndroid-%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">新建Android 项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E5%85%A5Unity%E7%9A%84classes-jar%E5%8C%85"><span class="nav-number">2.1.2.</span> <span class="nav-text">引入Unity的classes.jar包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99Android%E9%A1%B9%E7%9B%AE%E4%B8%8EUnity%E9%A1%B9%E7%9B%AE%E4%BA%A4%E4%BA%92%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.3.</span> <span class="nav-text">编写Android项目与Unity项目交互的代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Build%E5%BE%97%E5%88%B0app-debug-aar%E6%96%87%E4%BB%B6%E5%92%8CManifest-xml%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.4.</span> <span class="nav-text">Build得到app-debug.aar文件和Manifest.xml文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unity%E7%AB%AF%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text">Unity端的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAUnity%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.2.1.</span> <span class="nav-text">创建Unity项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99C-%E8%84%9A%E6%9C%AC"><span class="nav-number">2.2.2.</span> <span class="nav-text">编写C#脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C"><span class="nav-number">2.2.3.</span> <span class="nav-text">编译运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">2.2.4.</span> <span class="nav-text">效果展示</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8AAR%E6%88%96JAR%E6%96%B9%E5%BC%8F%E7%9A%84Android-Plugin"><span class="nav-number">3.</span> <span class="nav-text">使用AAR或JAR方式的Android Plugin</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Android%E7%AB%AF%E7%9A%84%E6%93%8D%E4%BD%9C-1"><span class="nav-number">3.1.</span> <span class="nav-text">Android端的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8Android-Studio%E4%B8%AD%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.1.1.</span> <span class="nav-text">在Android Studio中新建项目</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unity%E7%AB%AF%E7%9A%84%E6%93%8D%E4%BD%9C-1"><span class="nav-number">3.2.</span> <span class="nav-text">Unity端的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAUnity%E9%A1%B9%E7%9B%AE-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">创建Unity项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99C-%E8%84%9A%E6%9C%AC-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">编写C#脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%89%E7%85%A7%E6%AD%A5%E9%AA%A4%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C"><span class="nav-number">3.2.3.</span> <span class="nav-text">按照步骤编译运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA-1"><span class="nav-number">3.2.4.</span> <span class="nav-text">效果展示</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Roly"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Roly</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rolyyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rolyyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:rolyyu@outlook.com" title="E-Mail → mailto:rolyyu@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/roly.yu.3" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;roly.yu.3" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/roly-yu-71573a108" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;roly-yu-71573a108" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Roly</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'UcWKjECGEctyd1FKvO7sKlNF-gzGzoHsz',
+      appKey     : 'h4inOLrsuDhVslcH1LGqHriP',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>

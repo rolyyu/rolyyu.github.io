@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"rolyyu.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从 API 级别 27 (Android O MR 1) 开始，Android NDK 支持 Address Sanitizer（也称为 ASan）。ASan 是一种基于编译器的快速检测工具，用于检测C&#x2F;C++代码中的内存错误。ASan 的 CPU 开销约为 2 倍，代码大小开销在 50% 到 2 倍之间，并且内存开销很大。 注意: ASan在Android 平台上不支持检测内存泄漏！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android NDK 使用 Address Sanitizer">
+<meta property="og:url" content="http://rolyyu.github.io/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/index.html">
+<meta property="og:site_name" content="Roly&#39;s Blog">
+<meta property="og:description" content="从 API 级别 27 (Android O MR 1) 开始，Android NDK 支持 Address Sanitizer（也称为 ASan）。ASan 是一种基于编译器的快速检测工具，用于检测C&#x2F;C++代码中的内存错误。ASan 的 CPU 开销约为 2 倍，代码大小开销在 50% 到 2 倍之间，并且内存开销很大。 注意: ASan在Android 平台上不支持检测内存泄漏！！">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-09-13T07:05:58.000Z">
+<meta property="article:modified_time" content="2024-12-29T05:58:07.199Z">
+<meta property="article:author" content="Roly">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="NDK">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://rolyyu.github.io/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Android NDK 使用 Address Sanitizer | Roly's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Roly's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Whatever will be, will be, the future's not ours to see.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android NDK 使用 Address Sanitizer
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-13 15:05:58" itemprop="dateCreated datePublished" datetime="2021-09-13T15:05:58+08:00">2021-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" class="post-meta-item leancloud_visitors" data-flag-title="Android NDK 使用 Address Sanitizer" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>从 API 级别 27 (Android O MR 1) 开始，Android NDK 支持 <a target="_blank" rel="noopener" href="https://github.com/google/sanitizers/wiki/AddressSanitizer">Address Sanitizer</a>（也称为 ASan）。ASan 是一种基于编译器的快速检测工具，用于检测C&#x2F;C++代码中的内存错误。ASan 的 CPU 开销约为 2 倍，代码大小开销在 50% 到 2 倍之间，并且内存开销很大。</p>
+<p><strong>注意: ASan在Android 平台上不支持检测内存泄漏！！！</strong></p>
+<span id="more"></span> 
+
+<p>ASan 可以检测以下问题：</p>
+<ul>
+<li>堆栈和堆缓冲区上溢&#x2F;下溢</li>
+<li>释放之后的堆使用情况</li>
+<li>超出范围的堆栈使用情况</li>
+<li>重复释放&#x2F;错误释放</li>
+</ul>
+<p>ASan 可在 32 位和 64 位 ARM 以及 x86 和 x86-64 上运行。Android NDK 也支持 <a target="_blank" rel="noopener" href="https://clang.llvm.org/docs/HardwareAssistedAddressSanitizerDesign.html">HWAddress Sanitizer</a>（也称为 HWASan）。与ASan 相比，HWASan功能类似，开销较小，但是使用麻烦。</p>
+<ul>
+<li>NDK r21 和 Android 10（API 级别 29）以上</li>
+<li>HWASan 仅适用于 64 位 Arm 设备</li>
+<li>HWASan 应用需要将预构建的映像刷写到支持的 Pixel 手机上。</li>
+</ul>
+<h2 id="Build"><a href="#Build" class="headerlink" title="Build"></a>Build</h2><p>如需使用 <a target="_blank" rel="noopener" href="https://github.com/google/sanitizers/wiki/AddressSanitizer">Address Sanitizer</a> 构建应用的原生 (JNI) 代码，请执行以下操作：</p>
+<p>Quote from: <a target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/asan#building">https://developer.android.com/ndk/guides/asan#building</a></p>
+<blockquote>
+<p>1.在模块的 <code>build.gradle</code> 中：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line"> defaultConfig &#123;</span><br><span class="line">     externalNativeBuild &#123;</span><br><span class="line">         cmake &#123;</span><br><span class="line">             # Can also use system or none as ANDROID_STL.</span><br><span class="line">             arguments <span class="string">&quot;-DANDROID_ARM_MODE=arm&quot;</span>, <span class="string">&quot;-DANDROID_STL=c++_shared&quot;</span></span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.对于 <code>CMakeLists.txt</code> 中的每个目标：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_compile_options</span>(<span class="variable">$&#123;TARGET&#125;</span> PUBLIC -fsanitize=address -fno-omit-frame-pointer)</span><br><span class="line"><span class="keyword">set_target_properties</span>(<span class="variable">$&#123;TARGET&#125;</span> PROPERTIES LINK_FLAGS -fsanitize=address)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>还可以添加开关，只在debug版本中开启该功能：</p>
+<p>在模块的 <code>build.gradle</code> 中:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmake &#123;</span><br><span class="line">    arguments <span class="string">&quot;-DANDROID_STL=c++_shared&quot;</span>, <span class="string">&quot;-DSANITIZE=TRUE&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在模块的 <code>CMakeLists.txt</code> 中添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Enable address sanitizer only for debug builds</span><br><span class="line">if (SANITIZE)</span><br><span class="line">	...</span><br><span class="line">endif()</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>还可以使用如下配置:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> (CMAKE_CXX_FLAGS <span class="string">&quot;$&#123;CMAKE_CXX_FLAGS&#125; -fsanitize=address -fno-omit-frame-pointer&quot;</span>)</span><br><span class="line"><span class="keyword">SET</span> (CMAKE_C_FLAGS <span class="string">&quot;$&#123;CMAKE_C_FLAGS&#125; -fsanitize=address -fno-omit-frame-pointer&quot;</span>)</span><br><span class="line"><span class="keyword">SET</span> (CMAKE_SHARED_LINKER_FLAGS <span class="string">&quot;$&#123;CMAKE_SHARED_LINKER_FLAGS&#125; -fsanitize=address&quot;</span>)</span><br><span class="line"><span class="keyword">SET</span> (CMAKE_ANDROID_ARM_MODE ARM)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Run"><a href="#Run" class="headerlink" title="Run"></a>Run</h2><p>ASan需要在进程启动时启用，要求以全新的进程来运行应用，而不是从 zygote 克隆。从 Android O MR1（API 级别 27）开始，可替换应用进程的<a target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/wrap-script">封装 Shell 脚本</a>。这样可调试的应用就可对其应用启动过程进行自定义，以便在生产设备上使用 ASan。</p>
+<p>Quote from: <a target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/asan#running">https://developer.android.com/ndk/guides/asan#running</a></p>
+<blockquote>
+<ol>
+<li><p>将 <code>android:debuggable</code> 和 <code>android:extractNativeLibs=true</code> 添加到应用清单。请注意，后者是某些配置的默认设置。如需了解详情，请参阅<a target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/wrap-script">封装 Shell 脚本</a>。</p>
+</li>
+<li><p>将 ASan 运行时库添加到应用模块的 <code>jniLibs</code> 中。</p>
+</li>
+<li><p>将包含以下内容的 <code>wrap.sh</code> 文件添加到每个相同的目录中。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/system/bin/sh</span></span><br><span class="line">HERE=<span class="string">&quot;<span class="subst">$(cd <span class="string">&quot;<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$0</span>&quot;</span>)</span>&quot;</span> &amp;&amp; pwd)</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> ASAN_OPTIONS=log_to_syslog=<span class="literal">false</span>,allow_user_segv_handler=1</span><br><span class="line">ASAN_LIB=$(<span class="built_in">ls</span> <span class="variable">$HERE</span>/libclang_rt.asan-*-android.so)</span><br><span class="line"><span class="keyword">if</span> [ -f <span class="string">&quot;<span class="variable">$HERE</span>/libc++_shared.so&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="comment"># Workaround for https://github.com/android-ndk/ndk/issues/988.</span></span><br><span class="line">    <span class="built_in">export</span> LD_PRELOAD=<span class="string">&quot;<span class="variable">$ASAN_LIB</span> <span class="variable">$HERE</span>/libc++_shared.so&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">export</span> LD_PRELOAD=<span class="string">&quot;<span class="variable">$ASAN_LIB</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="string">&quot;<span class="variable">$@</span>&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+</blockquote>
+<h3 id="第一步-1"><a href="#第一步-1" class="headerlink" title="第一步"></a>第一步</h3><p>目前发现， <code>android:debuggable</code> 默认是 <code>&quot;false&quot;</code>，即使不设置为 <code>&quot;true&quot;</code>，也不影响结果。</p>
+<p>如果没有在 <code>AndroidManifest.xml</code>配置， <code>android:extractNativeLibs</code>默认值是 <code>&quot;true&quot;</code>。</p>
+<p><em><strong>注意：</strong></em>如果使用app bundle, Android Gradle 插件从<a target="_blank" rel="noopener" href="https://developer.android.com/studio/releases/gradle-plugin#3-6-0">3.6.0</a> 默认会将 <code>extractNativeLibs</code> 设置为 <code>&quot;false&quot;</code>。也就是说，原生库将保持页面对齐状态并以未压缩的形式打包。</p>
+<h3 id="第二步-1"><a href="#第二步-1" class="headerlink" title="第二步"></a>第二步</h3><p>除了手动拷贝，还可以使用下面的两种方法：</p>
+<p>(1)在<code>CMakeLists.txt</code>中添加如下配置, 自动拷贝<code>*.asan*$&#123;ARCH&#125;*-android.so</code>, 需要设置库的名称<em>LibraryName</em>:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(LIBNAME <span class="string">&quot;LibraryName&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># A function to retrieve the architecture from the ABI</span></span><br><span class="line"><span class="comment"># (neither ANDROID_ARCH_NAME nor CMAKE_SYSTEM_PROCESSOR work for this)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span>(get_architecture ABI ARCH)</span><br><span class="line">    <span class="keyword">if</span> (ABI <span class="keyword">STREQUAL</span> armeabi-v7a)</span><br><span class="line">        <span class="keyword">set</span>(<span class="variable">$&#123;ARCH&#125;</span> arm PARENT_SCOPE)</span><br><span class="line">    <span class="keyword">elseif</span>(ABI <span class="keyword">STREQUAL</span> arm64-v8a)</span><br><span class="line">        <span class="keyword">set</span>(<span class="variable">$&#123;ARCH&#125;</span> aarch64 PARENT_SCOPE)</span><br><span class="line">    <span class="keyword">elseif</span>(ABI <span class="keyword">STREQUAL</span> x86)</span><br><span class="line">        <span class="keyword">set</span>(<span class="variable">$&#123;ARCH&#125;</span> i686 PARENT_SCOPE)</span><br><span class="line">    <span class="keyword">elseif</span>(ABI <span class="keyword">STREQUAL</span> x86_64)</span><br><span class="line">        <span class="keyword">set</span>(<span class="variable">$&#123;ARCH&#125;</span> x86_64 PARENT_SCOPE)</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">        <span class="keyword">message</span>(FATAL_ERROR <span class="string">&quot;Unsupported ABI&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Asan libs are &quot;somewhere&quot; in the toolchain&#x27;s root, we try to find the</span></span><br><span class="line"><span class="comment"># right one for the current architecture and copy it to the libs output dir</span></span><br><span class="line"><span class="comment"># (so that it will be packed in the apk):</span></span><br><span class="line"></span><br><span class="line">get_architecture(<span class="variable">$&#123;ANDROID_ABI&#125;</span> ARCH)</span><br><span class="line"><span class="keyword">file</span>(GLOB_RECURSE ASAN_SRC <span class="variable">$&#123;ANDROID_TOOLCHAIN_ROOT&#125;</span>/*.asan*<span class="variable">$&#123;ARCH&#125;</span>*-android.so)</span><br><span class="line"><span class="keyword">set</span>(ASAN_DEST <span class="variable">$&#123;CMAKE_LIBRARY_OUTPUT_DIRECTORY&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_custom_command</span>(</span><br><span class="line">        <span class="keyword">TARGET</span> <span class="variable">$&#123;LIBNAME&#125;</span> PRE_BUILD</span><br><span class="line">        <span class="keyword">COMMAND</span> <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy <span class="variable">$&#123;ASAN_SRC&#125;</span> <span class="variable">$&#123;ASAN_DEST&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>(2)使用<code>asan_device_setup</code>，将<code>*.asan*$&#123;ARCH&#125;*-android.so</code>添加到设备，设备需要root。</p>
+<p>Mac 系统下，其路径为<code>ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/9.0.9/bin</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">❯ ./asan_device_setup --<span class="built_in">help</span>                                                                                     </span><br><span class="line">usage: ./asan_device_setup [--revert] [--device device-id] [--lib path] [--extra-options options]</span><br><span class="line">  --revert: Uninstall ASan from the device.</span><br><span class="line">  --lib: Path to ASan runtime library.</span><br><span class="line">  --extra-options: Extra ASAN_OPTIONS.</span><br><span class="line">  --device: Install to the given device. Use <span class="string">&#x27;adb devices&#x27;</span> to find</span><br><span class="line">            device-id.</span><br><span class="line">  --use-su: Use <span class="string">&#x27;su -c&#x27;</span> prefix <span class="keyword">for</span> every adb <span class="built_in">command</span> instead of using</span><br><span class="line">            <span class="string">&#x27;adb root&#x27;</span> once.</span><br></pre></td></tr></table></figure>
+
+<p>如果执行成功，那么设备就会自动重启，测试完成最好移除这些库。</p>
+<h3 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h3><p>NDK包含一个推荐的针对ASan的<a target="_blank" rel="noopener" href="https://android.googlesource.com/platform/ndk/+/refs/heads/master/wrap.sh/asan.sh">wrap.sh文件</a>。</p>
+<p>Mac 系统下，其路径为<code>ANDROID_NDK_HOME/wrap.sh/asan.sh</code></p>
+<p>将<code>asan.sh</code>重命名为<code>wrap.sh</code>，在模块的跟目录下添加  <code>wrap</code>, 目录结构应包含以下内容 :</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;project root&gt;</span><br><span class="line">└── app</span><br><span class="line">    ├── src</span><br><span class="line">    │   ├── main</span><br><span class="line">    │   │   ├── AndroidManifest.xml</span><br><span class="line">    │   │   ├── java</span><br><span class="line">    │   │   ├── cpp</span><br><span class="line">    │   │   └── res</span><br><span class="line">    │   ├── androidTest</span><br><span class="line">    │   └── test</span><br><span class="line">    └── wrap</span><br><span class="line">        └── lib</span><br><span class="line">            ├── arm64-v8a</span><br><span class="line">            │   └── wrap.sh</span><br><span class="line">            ├── armeabi-v7a</span><br><span class="line">            │   └── wrap.sh</span><br><span class="line">            ├── x86</span><br><span class="line">            │   └── wrap.sh</span><br><span class="line">            └── x86_64</span><br><span class="line">                └── wrap.sh</span><br></pre></td></tr></table></figure>
+
+<p>在模块的 <code>build.gradle</code> 中添加:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        debug &#123;</span><br><span class="line">            sourceSets.debug.resources.srcDir <span class="string">&quot;wrap&quot;</span></span><br><span class="line">            externalNativeBuild &#123;</span><br><span class="line">                cmake &#123;</span><br><span class="line">                    arguments <span class="string">&quot;-DANDROID_STL=c++_shared&quot;</span>, <span class="string">&quot;-DSANITIZE=TRUE&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Test-Case"><a href="#Test-Case" class="headerlink" title="Test Case"></a>Test Case</h2><h3 id="heap-use-after-free-error"><a href="#heap-use-after-free-error" class="headerlink" title="heap-use-after-free error"></a>heap-use-after-free error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doHeapUseAfterFree) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-heap-use-after-free?view=msvc-160</span></span><br><span class="line">    <span class="comment">// heap-use-after-free error</span></span><br><span class="line">    <span class="type">char</span> * <span class="keyword">volatile</span> p = <span class="keyword">new</span> <span class="type">char</span>[<span class="number">10</span>];</span><br><span class="line">    <span class="keyword">delete</span>[] p;</span><br><span class="line"></span><br><span class="line">    p[<span class="number">5</span>] = <span class="number">42</span>; <span class="comment">// Boom!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="heap-buffer-overflow-error"><a href="#heap-buffer-overflow-error" class="headerlink" title="heap-buffer-overflow error"></a>heap-buffer-overflow error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doHeapBufferOverflow) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-heap-buffer-overflow?view=msvc-160</span></span><br><span class="line">    <span class="comment">// heap-buffer-overflow error</span></span><br><span class="line">    <span class="type">char</span> *x = (<span class="type">char</span>*)<span class="built_in">malloc</span>(<span class="number">10</span> * <span class="built_in">sizeof</span>(<span class="type">char</span>));</span><br><span class="line">    <span class="built_in">memset</span>(x, <span class="number">0</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> res = x[<span class="number">10</span>];  <span class="comment">// Boom!</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">LOGE</span>(<span class="string">&quot;res: %d&quot;</span>,res);</span><br><span class="line">    <span class="built_in">free</span>(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="stack-buffer-overflow-error"><a href="#stack-buffer-overflow-error" class="headerlink" title="stack-buffer-overflow error"></a>stack-buffer-overflow error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doStackBufferOverflow) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-stack-buffer-overflow?view=msvc-160</span></span><br><span class="line">    <span class="comment">// stack-buffer-overflow error</span></span><br><span class="line">    <span class="type">char</span> x[<span class="number">10</span>];</span><br><span class="line">    <span class="built_in">memset</span>(x, <span class="number">0</span>, <span class="number">10</span>);</span><br><span class="line">    <span class="type">int</span> res = x[<span class="number">10</span>];  <span class="comment">// Boom! Classic stack buffer overflow</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">LOGE</span>(<span class="string">&quot;res: %d&quot;</span>,res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="stack-buffer-underflow-error"><a href="#stack-buffer-underflow-error" class="headerlink" title="stack-buffer-underflow error"></a>stack-buffer-underflow error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doStackBufferUnderflow) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-stack-buffer-underflow?view=msvc-160</span></span><br><span class="line">    <span class="comment">// stack-buffer-underflow error</span></span><br><span class="line">    <span class="type">int</span> subscript = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">char</span> buffer[<span class="number">42</span>];</span><br><span class="line">    buffer[subscript] = <span class="number">42</span>; <span class="comment">// Boom!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="stack-use-after-return-error"><a href="#stack-use-after-return-error" class="headerlink" title="stack-use-after-return error"></a>stack-use-after-return error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span>* x;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> stack_buffer[<span class="number">42</span>];</span><br><span class="line">    x = &amp;stack_buffer[<span class="number">13</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doStackUseAfterReturn) &#123;</span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-stack-use-after-return?view=msvc-160</span></span><br><span class="line">    <span class="comment">// stack-use-after-return error</span></span><br><span class="line">    <span class="built_in">foo</span>();</span><br><span class="line">    *x = <span class="number">42</span>; <span class="comment">// Boom!</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// This check requires code generation that&#x27;s activated by an extra compiler option,</span></span><br><span class="line">    <span class="comment">// fsanitize-address-use-after-return, and by setting the environment variable</span></span><br><span class="line">    <span class="comment">// ASAN_OPTIONS=detect_stack_use_after_return=1.</span></span><br><span class="line">    <span class="built_in">LOGE</span>(<span class="string">&quot;This should set the environment variable ASAN_OPTIONS=detect_stack_use_after_return=1.&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="double-free-error"><a href="#double-free-error" class="headerlink" title="double-free error"></a>double-free error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doDoubleFree) &#123;</span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-double-free?view=msvc-160</span></span><br><span class="line">    <span class="comment">// double-free error</span></span><br><span class="line">    <span class="type">char</span> * <span class="keyword">volatile</span> p = <span class="keyword">new</span> <span class="type">char</span>[<span class="number">16</span>];</span><br><span class="line">    <span class="keyword">delete</span>[] p;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>[] p;  <span class="comment">// Boom!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="null-pointer-dereference-error"><a href="#null-pointer-dereference-error" class="headerlink" title="null-pointer dereference error"></a>null-pointer dereference error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doNullpointerDereference) &#123;</span><br><span class="line">    <span class="comment">//null-pointer dereference error</span></span><br><span class="line">    <span class="type">char</span> * <span class="keyword">volatile</span> p = (<span class="type">char</span> *)<span class="literal">nullptr</span>;</span><br><span class="line">    p[<span class="number">42</span>] = <span class="number">1</span>;  <span class="comment">// Boom!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="memcpy-param-overlap"><a href="#memcpy-param-overlap" class="headerlink" title="memcpy-param-overlap"></a>memcpy-param-overlap</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doMemcpyParamOverlap) &#123;</span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-memcpy-param-overlap?view=msvc-160</span></span><br><span class="line">    <span class="comment">// memcpy-param-overlap</span></span><br><span class="line">    <span class="comment">// The function memcpy doesn&#x27;t support overlapping memory.</span></span><br><span class="line">    <span class="comment">// It provides an alternative to memcpy that does support overlapping memory: memmove.</span></span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> buffer[] = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memcpy</span>(buffer, buffer + <span class="number">1</span>, <span class="number">5</span>); <span class="comment">// BOOM!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="strncat-param-overlap"><a href="#strncat-param-overlap" class="headerlink" title="strncat-param-overlap"></a>strncat-param-overlap</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">IMPL_FUNC</span>(<span class="type">void</span>,doStrncatParamOverlap) &#123;</span><br><span class="line">    <span class="comment">// https://docs.microsoft.com/en-us/cpp/sanitizers/error-strncat-param-overlap?view=msvc-160</span></span><br><span class="line">    <span class="comment">// strncat-param-overlap</span></span><br><span class="line">    <span class="comment">// Code that moves memory in overlapping buffer can cause hard-to-diagnose errors.</span></span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> buffer[] = <span class="string">&quot;hello\0XXX&quot;</span>;</span><br><span class="line">    <span class="built_in">strncat</span>(buffer, buffer + <span class="number">1</span>, <span class="number">3</span>); <span class="comment">// BOOM</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Sample"><a href="#Sample" class="headerlink" title="Sample"></a>Sample</h2><p><a target="_blank" rel="noopener" href="https://github.com/rolyyu/AndroidASan">https://github.com/rolyyu/AndroidASan</a></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/asan">https://developer.android.com/ndk/guides/asan</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/wrap-script">https://developer.android.com/ndk/guides/wrap-script</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/google/sanitizers">https://github.com/google/sanitizers</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/41552966/getting-new-delete-type-mismatch-from-asan">https://stackoverflow.com/questions/41552966/getting-new-delete-type-mismatch-from-asan</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/cpp/sanitizers/asan-error-examples?view=msvc-160">https://docs.microsoft.com/en-us/cpp/sanitizers/asan-error-examples?view=msvc-160</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/cpp/sanitizers/error-new-delete-type-mismatch?view=msvc-160">https://docs.microsoft.com/en-us/cpp/sanitizers/error-new-delete-type-mismatch?view=msvc-160</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/NDK/" rel="tag"># NDK</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/09/%E7%90%86%E8%A7%A3C-C-%E7%BC%96%E8%AF%91/" rel="prev" title="理解C/C++编译">
+      <i class="fa fa-chevron-left"></i> 理解C/C++编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/" rel="next" title="Linux core dump 分析">
+      Linux core dump 分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Build"><span class="nav-number">1.</span> <span class="nav-text">Build</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5"><span class="nav-number">1.1.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5"><span class="nav-number">1.2.</span> <span class="nav-text">第二步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Run"><span class="nav-number">2.</span> <span class="nav-text">Run</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-1"><span class="nav-number">2.1.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-1"><span class="nav-number">2.2.</span> <span class="nav-text">第二步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5"><span class="nav-number">2.3.</span> <span class="nav-text">第三步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Test-Case"><span class="nav-number">3.</span> <span class="nav-text">Test Case</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#heap-use-after-free-error"><span class="nav-number">3.1.</span> <span class="nav-text">heap-use-after-free error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heap-buffer-overflow-error"><span class="nav-number">3.2.</span> <span class="nav-text">heap-buffer-overflow error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stack-buffer-overflow-error"><span class="nav-number">3.3.</span> <span class="nav-text">stack-buffer-overflow error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stack-buffer-underflow-error"><span class="nav-number">3.4.</span> <span class="nav-text">stack-buffer-underflow error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stack-use-after-return-error"><span class="nav-number">3.5.</span> <span class="nav-text">stack-use-after-return error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#double-free-error"><span class="nav-number">3.6.</span> <span class="nav-text">double-free error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null-pointer-dereference-error"><span class="nav-number">3.7.</span> <span class="nav-text">null-pointer dereference error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memcpy-param-overlap"><span class="nav-number">3.8.</span> <span class="nav-text">memcpy-param-overlap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strncat-param-overlap"><span class="nav-number">3.9.</span> <span class="nav-text">strncat-param-overlap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sample"><span class="nav-number">4.</span> <span class="nav-text">Sample</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Roly"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Roly</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rolyyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rolyyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:rolyyu@outlook.com" title="E-Mail → mailto:rolyyu@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/roly.yu.3" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;roly.yu.3" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/roly-yu-71573a108" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;roly-yu-71573a108" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Roly</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'UcWKjECGEctyd1FKvO7sKlNF-gzGzoHsz',
+      appKey     : 'h4inOLrsuDhVslcH1LGqHriP',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>

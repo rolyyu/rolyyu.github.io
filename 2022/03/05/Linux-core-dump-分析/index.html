@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"rolyyu.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="有时，直接调试应用程序是不可能的。在这些情况下，可以在应用程序终止时收集有关该应用程序的信息，然后对其进行分析。识别应用程序中崩溃问题的最有效方法之一是通过分析 Core dump文件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux core dump 分析">
+<meta property="og:url" content="http://rolyyu.github.io/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Roly&#39;s Blog">
+<meta property="og:description" content="有时，直接调试应用程序是不可能的。在这些情况下，可以在应用程序终止时收集有关该应用程序的信息，然后对其进行分析。识别应用程序中崩溃问题的最有效方法之一是通过分析 Core dump文件。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-05T08:04:09.000Z">
+<meta property="article:modified_time" content="2024-12-29T05:58:07.204Z">
+<meta property="article:author" content="Roly">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://rolyyu.github.io/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux core dump 分析 | Roly's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Roly's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Whatever will be, will be, the future's not ours to see.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://rolyyu.github.io/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Roly">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Roly's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux core dump 分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-05 16:04:09" itemprop="dateCreated datePublished" datetime="2022-03-05T16:04:09+08:00">2022-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-29 13:58:07" itemprop="dateModified" datetime="2024-12-29T13:58:07+08:00">2024-12-29</time>
+              </span>
+
+          
+            <span id="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="Linux core dump 分析" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/03/05/Linux-core-dump-%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>有时，直接调试应用程序是不可能的。在这些情况下，可以在应用程序终止时收集有关该应用程序的信息，然后对其进行分析。识别应用程序中崩溃问题的最有效方法之一是通过分析 Core dump文件。</p>
+<span id="more"></span> 
+
+<h2 id="什么是Core-dump文件"><a href="#什么是Core-dump文件" class="headerlink" title="什么是Core dump文件?"></a>什么是Core dump文件?</h2><p>​		<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Core_dump">Core dump</a> 是操作系统在进程收到某些信号而终止运行时，将此时进程地址空间的内容以及有关进程状态的其他信息写入一个磁盘文件。这种信息可以用于调试。它是应用程序停止工作时应用程序内存的一部分的副本，Linux 系统中以ELF格式存储。它包含应用程序的所有内部变量和堆栈，从而允许检查应用程序的最终状态。在使用可执行文件和调试信息进行扩充时，可以使用调试器以类似于分析正在运行的程序的方式分析 Core dump 文件。</p>
+<p>除了整个系统内存或中止的程序的一部分，Core dump 文件包括额外的信息，如:</p>
+<ul>
+<li>处理器的状态</li>
+<li>处理器寄存器的内容</li>
+<li>内存管理信息</li>
+<li>程序的计数器和堆栈指针</li>
+<li>操作系统和处理器信息和标志</li>
+</ul>
+<p>Core dump 也被称为 memory dump, storage dump 或者直接称为 dump.</p>
+<h2 id="生成Core-dump文件"><a href="#生成Core-dump文件" class="headerlink" title="生成Core dump文件"></a>生成Core dump文件</h2><p>1.开启core dumps，修改&#x2F;etc&#x2F;systemd&#x2F;system.conf文件，将“DefaultLimitCORE”一行修改为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DefaultLimitCORE=infinity</span><br></pre></td></tr></table></figure>
+
+<p>2.重启系统</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">shutdown -r now</span></span><br></pre></td></tr></table></figure>
+
+<p>3.解除core dump文件大小的限制:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ulimit</span> -c unlimited</span></span><br></pre></td></tr></table></figure>
+
+<p>使用ulimit -a 查看是否生效，如需回退，设置该值为0而不是unlimited。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ulimit</span> -a</span></span><br><span class="line">-t: cpu time (seconds)              unlimited</span><br><span class="line">-f: file size (blocks)              unlimited</span><br><span class="line">-d: data seg size (kbytes)          unlimited</span><br><span class="line">-s: stack size (kbytes)             8192</span><br><span class="line">-c: core file size (blocks)         0</span><br><span class="line">-m: resident set size (kbytes)      unlimited</span><br><span class="line">-u: processes                       3789</span><br><span class="line">-n: file descriptors                1024</span><br><span class="line">-l: locked-in-memory size (kbytes)  65536</span><br><span class="line">-v: address space (kbytes)          unlimited</span><br><span class="line">-x: file locks                      unlimited</span><br><span class="line">-i: pending signals                 3789</span><br><span class="line">-q: bytes in POSIX msg queues       819200</span><br><span class="line">-e: max nice                        0</span><br><span class="line">-r: max rt priority                 0</span><br><span class="line">-N 15:                              unlimited</span><br></pre></td></tr></table></figure>
+
+<p>4.当应用程序崩溃时，将生成一个core dump文件。默认情况下，将在应用程序的工作目录中生成一个名为core的文件, 从Linux 2.6开始，可以通过修改 <strong>&#x2F;proc&#x2F;sys&#x2F;kernel&#x2F;core_pattern</strong>文件更改该行为, 可以定义一个用于命名core dump文件的模板。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> /proc/sys/kernel/core_pattern</span></span><br><span class="line">|/usr/share/apport/apport %p %s %c %d %P %E</span><br></pre></td></tr></table></figure>
+
+<p>但是, 在Ubuntu 20.04系统中, <em>apport</em>是<em>ubuntu</em>上的crash report服务, 在apport启用的时候，core dump文件在以下路径:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/var/lib/apport/coredump </span><br></pre></td></tr></table></figure>
+
+<h2 id="分析Core-dump文件"><a href="#分析Core-dump文件" class="headerlink" title="分析Core dump文件"></a>分析Core dump文件</h2><p>Core dump是一个磁盘文件，包含进程终止时的内存映像，由Linux内核在处理SIGQUIT、SIGILL、SIGABRT、SIGFPE和SIGSEGV等信号时生成。</p>
+<p>例如，当应用程序由于段错误(SIGSEGV)而崩溃时，会生成一个core文件。下面的代码块可以产生栈溢出。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> core_dump_test.c</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">stack_buffer_overflow</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">char</span> *buffer = <span class="string">&quot;buffer&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">100</span>;i &lt; <span class="number">1000</span>;i++)</span><br><span class="line">    	buffer[i] = <span class="string">&#x27;O&#x27;</span>;</span><br><span class="line">   	<span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, buffer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	stack_buffer_overflow();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译这段代码:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gcc -g -o core_dump_test core_dump_test.c</span></span><br></pre></td></tr></table></figure>
+
+<p>运行后，生成了一个core文件, 然后把它拷贝到当前目录，命名为core：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">./core_dump_test</span></span><br><span class="line">[1]    1334 segmentation fault (core dumped)  ./core_dump_test</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> /var/lib/apport/coredump</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span></span></span><br><span class="line">core._home_ubuntu_Desktop_core_test.1000.a0870c1b-c0c8-4a05-b906-e8d6c19038b6.21071.13828388</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cp</span> core._home_ubuntu_Desktop_core_test.1000.a0870c1b-c0c8-4a05-b906-e8d6c19038b6.21071.13828388 core</span></span><br></pre></td></tr></table></figure>
+
+<p>要详细分析core文件，使用GDB加载可执行文件和core文件:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gdb -c core core_dump_test</span></span><br><span class="line">GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2</span><br><span class="line">Copyright (C) 2020 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line">Type &quot;show copying&quot; and &quot;show warranty&quot; for details.</span><br><span class="line">This GDB was configured as &quot;x86_64-linux-gnu&quot;.</span><br><span class="line">Type &quot;show configuration&quot; for configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http://www.gnu.org/software/gdb/bugs/&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span><br><span class="line"></span><br><span class="line">For help, type &quot;help&quot;.</span><br><span class="line">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...</span><br><span class="line">Reading symbols from core_dump_test...</span><br><span class="line">[New LWP 1617]</span><br><span class="line">Core was generated by `./core_dump_test&#x27;.</span><br><span class="line">Program terminated with signal SIGSEGV, Segmentation fault.</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">0  0x00005589d3919176 <span class="keyword">in</span> stack_buffer_overflow () at core_dump_test.c:8</span></span><br><span class="line">8	    	buffer[i] = &#x27;O&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>在gdb中，查看backtrace:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(gdb) bt</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">0  0x00005589d3919176 <span class="keyword">in</span> stack_buffer_overflow () at core_dump_test.c:8</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">1  0x00005589d39191a7 <span class="keyword">in</span> main () at core_dump_test.c:12</span></span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+
+<p>为了更好地查看源代码，我们可以在TUI模式下打开GDB:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gdb -c core core_dump_test -tui</span></span><br><span class="line">┌──core_dump_test.c─────────────────────────────────────────────────────────┐</span><br><span class="line">│   1           #include &lt;stdio.h&gt;                                          │</span><br><span class="line">│   2           #include &lt;stdlib.h&gt;                                         │</span><br><span class="line">│   3           #include &lt;string.h&gt;                                         │</span><br><span class="line">│   4                                                                       │</span><br><span class="line">│   5           void stack_buffer_overflow()&#123;                               │</span><br><span class="line">│   6               char *buffer = &quot;buffer&quot;;                                │</span><br><span class="line">│   7               for(int i = 100;i &lt; 1000;i++)                           │</span><br><span class="line">│  &gt;8                   buffer[i] = &#x27;O&#x27;;                                    │</span><br><span class="line">│   9                   printf(&quot;%s\n&quot;, buffer);                             │</span><br><span class="line">│   10          &#125;                                                           │</span><br><span class="line">│   11          int main()&#123;                                                 │</span><br><span class="line">│   12                  stack_buffer_overflow();                            │</span><br><span class="line">│   13                  return 0;                                           │</span><br><span class="line">│   14          &#125;                                                           │</span><br><span class="line">└───────────────────────────────────────────────────────────────────────────┘</span><br><span class="line">core LWP 1617 In: stack_buffer_overflow             L8    PC: 0x5589d3919176</span><br><span class="line">This GDB was configured as &quot;x86_64-linux-gnu&quot;.</span><br><span class="line">Type &quot;show configuration&quot; for configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http://www.gnu.org/software/gdb/bugs/&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span><br><span class="line"></span><br><span class="line">For help, type &quot;help&quot;.</span><br><span class="line">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...</span><br><span class="line">--Type &lt;RET&gt; for more, q to quit, c to continue without paging--</span><br><span class="line"></span><br><span class="line">Reading symbols from core_dump_test...</span><br><span class="line">[New LWP 1617]</span><br><span class="line">Core was generated by `./core_dump_test&#x27;.</span><br><span class="line">Program terminated with signal SIGSEGV, Segmentation fault.</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">0  0x00005589d3919176 <span class="keyword">in</span> stack_buffer_overflow () at core_dump_test.c:8</span></span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+
+<p>如果编译时没有添加-g, 调试信息和行号将无法解析：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(gdb) bt</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">0  0x00005589d3919176 <span class="keyword">in</span> ?? ()</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">1  0x00005589d39191a7 <span class="keyword">in</span> ?? ()</span></span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Core_dump">https://en.wikipedia.org/wiki/Core_dump</a></p>
+<p><a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man5/core.5.html">https://man7.org/linux/man-pages/man5/core.5.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.techopedia.com/definition/16251/core-dump#:~:text=A%20core%20dump%20is%20a,when%20the%20program%20ended%20atypically">https://www.techopedia.com/definition/16251/core-dump#:~:text=A%20core%20dump%20is%20a,when%20the%20program%20ended%20atypically</a></p>
+<p><a target="_blank" rel="noopener" href="https://embeddedbits.org/linux-core-dump-analysis/">https://embeddedbits.org/linux-core-dump-analysis/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.brendangregg.com/blog/2016-08-09/gdb-example-ncurses.html#:~:text=">https://www.brendangregg.com/blog/2016-08-09/gdb-example-ncurses.html#:~:text=</a>(A%20core%20dump%20is%20a,gdb%20to%20inspect%20the%20issue</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/2065912/core-dumped-but-core-file-is-not-in-the-current-directory">https://stackoverflow.com/questions/2065912/core-dumped-but-core-file-is-not-in-the-current-directory</a></p>
+<p><a target="_blank" rel="noopener" href="https://askubuntu.com/questions/1349047/where-do-i-find-core-dump-files-and-how-do-i-view-and-analyze-the-backtrace-st">https://askubuntu.com/questions/1349047/where-do-i-find-core-dump-files-and-how-do-i-view-and-analyze-the-backtrace-st</a></p>
+<p><a target="_blank" rel="noopener" href="https://wiki.ubuntu.com/Apport">https://wiki.ubuntu.com/Apport</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/13/Android-NDK-%E4%BD%BF%E7%94%A8-Address-Sanitizer/" rel="prev" title="Android NDK 使用 Address Sanitizer">
+      <i class="fa fa-chevron-left"></i> Android NDK 使用 Address Sanitizer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/07/Video-Buffer-Verifier/" rel="next" title="Video Buffer Verifier">
+      Video Buffer Verifier <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFCore-dump%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">什么是Core dump文件?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90Core-dump%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">生成Core dump文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90Core-dump%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">分析Core dump文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Roly"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Roly</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rolyyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rolyyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:rolyyu@outlook.com" title="E-Mail → mailto:rolyyu@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/roly.yu.3" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;roly.yu.3" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/roly-yu-71573a108" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;roly-yu-71573a108" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Roly</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'UcWKjECGEctyd1FKvO7sKlNF-gzGzoHsz',
+      appKey     : 'h4inOLrsuDhVslcH1LGqHriP',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>
